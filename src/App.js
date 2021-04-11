@@ -369,13 +369,13 @@ function App() {
           <br />
           <span style={{ color: "#aaa" }}>{numberWithCommas(income)}</span>
         </div>
-        <div>🠖</div>
+        <div>→</div>
         <div style={{ flexGrow: 1, flexBasis: 0, textAlign: "center" }}>
           <small style={{ color: "#0af" }}>เงินได้สุทธิ</small>
           <br />
           {numberWithCommas(netIncome)}
         </div>
-        <div>🠖</div>
+        <div>→</div>
         <div style={{ flexGrow: 1, flexBasis: 0, textAlign: "center" }}>
           <small style={{ color: "#f90" }}>ภาษี</small>
           <br />
