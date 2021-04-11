@@ -45,10 +45,12 @@ export const D3Component = ({
         bottom: 30,
     },
     isPullTax = false,
+    showBrackets = true,
     isActivateTax = true,
     setPullTax = (x) => {},
     transitionTime = 500,
-    enableTransition = true
+    enableTransition = true,
+    isBlink
 }) => {
     const { observe, unobserve, width, height, entry } = useDimensions({
         onResize: ({ observe, unobserve, width, height, entry }) => {
@@ -127,7 +129,7 @@ export const D3Component = ({
             svg.select('rect.expense')
                 .attr('width', barWidth)
                 .transition().duration(transitionDuration)
-                .style('fill', '#135')
+                .style('fill', '#312b46')
                 .attr('y', scaleIncome(netIncome + cleanedAllowance))
                 .attr('height', Math.max(0, scaleIncome(cleanedExpense)));
 
@@ -137,24 +139,30 @@ export const D3Component = ({
                 .attr('data-callowance', cleanedAllowance)
                 .attr('data-sallowance', scaleIncome(cleanedAllowance))
                 .transition().duration(transitionDuration)
-                .style('fill', '#147')
+                .style('fill', '#2a4236')
                 .attr('y', scaleIncome(netIncome))
                 .attr('height', Math.max(0, scaleIncome(cleanedAllowance)));
 
             svg.select('text.net-income-text')
                 .text(`เงินได้สุทธิ`)// ${numberWithCommas(netIncome)} บาท`)
+                .transition().duration(transitionDuration)
                 .attr('x', barWidth / 2)
-                .attr('y', -scaleIncome(netIncome / 2));
+                .attr('y', -scaleIncome(netIncome / 2))
+                .attr('opacity', netIncome > 0 ? 1 : 0)
 
             svg.select('text.net-expense-text')
                 .text(`ค่าลดหย่อน`)// ${numberWithCommas(allowance)} บาท`)
+                .transition().duration(transitionDuration)
                 .attr('x', barWidth / 2)
-                .attr('y', -scaleIncome(netIncome + cleanedAllowance / 2));
+                .attr('y', -scaleIncome(netIncome + cleanedAllowance / 2))
+                .attr('opacity', cleanedAllowance > 0 ? 1 : 0)
 
             svg.select('text.net-allowance-text')
                 .text(`ค่าใช้จ่าย`)// ${numberWithCommas(expense)} บาท`)
+                .transition().duration(transitionDuration)
                 .attr('x', barWidth / 2)
-                .attr('y', -scaleIncome(income - expense / 2));
+                .attr('y', -scaleIncome(income - expense / 2))
+                .attr('opacity', cleanedExpense > 0 ? 1 : 0)
 
             svg.select('path.tax-stairs-camouflage')
                 .attr('fill', '#222')
@@ -164,10 +172,11 @@ export const D3Component = ({
 
             svg.select('path.tax-stairs')
                 .attr('fill', '#f80')
+                .style('animation', isActivateTax && isBlink ? 'blink 1s infinite' : 'none')
                 .transition().duration(transitionDuration)
                 .attr('d', generateTaxBracketsPathD)
                 .attr('transform', isPullTax ? `translate(${-50}, 0)` : 'translate(0, 0)')
-                .style('opacity', isActivateTax && !isPullTax ? 1 : 0);
+                .style('opacity', isActivateTax && !isPullTax ? 1 : 0)
 
             const bracketLineGroups = svg.select('g.tax-lines')
                 .selectAll('g')
@@ -193,6 +202,8 @@ export const D3Component = ({
                 .transition().duration(transitionDuration)
                 .attr('y', d => scaleIncome(d.minNetIncome))
                 .attr('height', d => scaleIncome(d.maxNetIncome - d.minNetIncome))
+                .attr('opacity', showBrackets ? 1 : 0)
+
 
             bracketLineGroups.merge(bracketLineGroupsEnter)
                 .select('line')
@@ -204,6 +215,7 @@ export const D3Component = ({
                 // .style('stroke-opacity', '0.4')
                 .attr('y1', d => scaleIncome(d.maxNetIncome))
                 .attr('y2', d => scaleIncome(d.maxNetIncome))
+                .attr('opacity', showBrackets ? 1 : 0)
 
             bracketLineGroups.merge(bracketLineGroupsEnter)
                 .select('text.bracket-rate-text')
@@ -215,6 +227,7 @@ export const D3Component = ({
                 .text(d => `เริ่มคิดที่ ${numberWithCommas(d.minNetIncome)} บาท`)
                 .style('fill-opacity', (d, i) => i != 0 && scaleIncome(d.maxNetIncome - d.minNetIncome) > 20 ? 1 : 0)
                 .attr('y', d => -scaleIncome(d.minNetIncome) - 5)
+                .attr('opacity', showBrackets ? 1 : 0)
 
             bracketLineGroups.merge(bracketLineGroupsEnter)
                 .select('text.bracket-min-text')
@@ -228,6 +241,7 @@ export const D3Component = ({
                 //     : `${d.taxRate * 100}%`)
                 .style('fill-opacity', (d, i) => i != 0 && scaleIncome(d.maxNetIncome - d.minNetIncome) > 20 ? 1 : 0)
                 .attr('y', d => -scaleIncome(d.minNetIncome) - 5)
+                .attr('opacity', showBrackets ? 1 : 0)
 
             // AXES
 
@@ -291,11 +305,11 @@ export const D3Component = ({
                             fill: '#fff', fontSize: '0.75rem', alignmentBaseline: 'middle', textAnchor: 'middle', fillOpacity: 0.4
                         }} />
                         <g className="tax-lines" />
-                        <g className="axis-income-top" />
-                        <g className="axis-income-bottom" />
-                        <g className="axis-tax-rate" />
-                        <path className="tax-stairs-camouflage" clip-path="url(#net-income-mask)" onClick={() => setPullTax(false)} />
-                        <path className="tax-stairs" clip-path="url(#net-income-mask)" onClick={() => setPullTax(!isPullTax)} />
+                        <g className="axis axis-income-top" />
+                        <g className="axis axis-income-bottom" />
+                        <g className="axis axis-tax-rate" />
+                        <path className="tax-stairs-camouflage" clipPath="url(#net-income-mask)" onClick={() => setPullTax(false)} />
+                        <path className="tax-stairs" clipPath="url(#net-income-mask)" onClick={() => setPullTax(!isPullTax)} />
                     </g>
                 </g>
             </CartesianSvg>
