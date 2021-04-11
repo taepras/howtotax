@@ -5,6 +5,7 @@ import useDimensions from "react-cool-dimensions";
 import styled from 'styled-components';
 import { useResizeDetector } from 'react-resize-detector';
 import { transition } from 'd3';
+import { useNetIncome } from '../utils/TaxCalculation';
 
 
 const SvgContainer = styled.div`
@@ -63,11 +64,9 @@ export const D3Component = ({
     const d3Container = useRef(null);
 
     const cleanedExpense = useMemo(() => expense < (income - allowance) ? +expense : +Math.max(0, income - allowance), [income, expense]);
-    const cleanedAllowance = useMemo(() => allowance < income ? +allowance : +income, [income, allowance]);
+    const cleanedAllowance = useMemo(() => Math.min(income, allowance), [income, allowance]);
 
-    const netIncome = useMemo(() => {
-        return Math.max(income - expense - allowance, 0);
-    }, [income, expense, allowance]);
+    const netIncome = useNetIncome(income, expense, allowance);
 
     const scaleIncome = useCallback(
         d3.scaleLinear()
@@ -134,6 +133,9 @@ export const D3Component = ({
 
             svg.select('rect.allowance')
                 .attr('width', barWidth)
+                .attr('data-allowance', allowance)
+                .attr('data-callowance', cleanedAllowance)
+                .attr('data-sallowance', scaleIncome(cleanedAllowance))
                 .transition().duration(transitionDuration)
                 .style('fill', '#147')
                 .attr('y', scaleIncome(netIncome))

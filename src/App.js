@@ -70,6 +70,34 @@ const Step = styled.div`
   }}
 `;
 
+const StepOnly = styled.div`
+  ${(props) => {
+    switch (props.status) {
+      case -1:
+        return css`
+          transform: translateX(-100px);
+          opacity: 0;
+          pointer-events: none;
+        `;
+        break;
+      case 1:
+        return css`
+          transform: translateX(100px);
+          opacity: 0;
+          pointer-events: none;
+        `;
+        break;
+      default:
+        return css`
+          /* transform: translateX(-100px):  */
+          /* opacity: 0; */
+          /* pointer-events: none; */
+        `;
+        break;
+    }
+  }}
+`;
+
 const ContentContainer = styled.div`
   /* height: 200px; */
   display: flex;
@@ -94,6 +122,7 @@ const PageContainer = styled.div`
   display: flex;
   gap: 10px;
   flex-direction: column;
+  overflow: hidden;
 
   @media (min-width: 768px) {
     flex-direction: row;
@@ -103,10 +132,11 @@ const PageContainer = styled.div`
 
 const ControlsContainer = styled.div`
   /* margin-top: 30px; */
-  display: grid;
-  grid-template-columns: auto auto 80px;
-  column-gap: 10px;
-  row-gap: 15px;
+  display: flex;
+  /* grid-template-columns: auto auto 80px; */
+  /* column-gap: 10px; */
+  /* row-gap: 15px; */
+  gap: 0.5rem;
   flex-direction: column;
   /* margin-bottom: 30px; */
   align-content: center;
@@ -126,26 +156,32 @@ const Button = styled.button`
   border: none;
   border-radius: 4px;
   padding: 4px 8px;
+  font-family: "Bai Jamjuree", sans-serif;
 
-  ${props => props.secondary ? css`
-    border: 1px white solid;
-    background-color: transparent;
-    color: white;
-  ` : css`
-    background-color: white;
-  `}
+  ${(props) =>
+    props.secondary
+      ? css`
+          border: 1px white solid;
+          background-color: transparent;
+          color: white;
+        `
+      : css`
+          background-color: white;
+        `}
 
-  ${props => props.disabled && css`
-    opacity: 0.4;
-  `}
-`
+  ${(props) =>
+    props.disabled &&
+    css`
+      opacity: 0.4;
+    `}
+`;
 
 function App() {
   const [income, setIncome] = useState(0);
   const [expense, setExpense] = useState(0);
   const [allowance, setAllowance] = useState(0);
   const [enableTransition, setEnableTransition] = useState(true);
-  const [currentNarrativeStep, setCurrentNarrativeStep] = useState(0);
+  const [currentNarrativeStep, setCurrentNarrativeStep] = useState(-1);
 
   const [isPullTax, setPullTax] = useState(false);
   const [isActivateTax, setActivateTax] = useState(false);
@@ -196,11 +232,22 @@ function App() {
   const netIncome = useNetIncome(income, expense, allowance);
   const taxFinal = useTaxCalculation(netIncome, taxBrackets);
 
-  const [narrativeSteps, _] = useState([
+  const narrativeSteps = [
     <>
       <p>คำนวณภาษีเงินได้บุคคลธรรมดา</p>
+      <p></p>
       <ControlsContainer>
-        <label>รายได้ต่อปี</label>
+        <div style={{ display: "flex" }}>
+          <label style={{ flexGrow: 1 }}>รายได้ต่อปี</label>
+          <input
+            type="number"
+            step={10000}
+            min={0}
+            value={income}
+            onChange={(e) => setIncome(e.target.value)}
+            style={{ width: "80px" }}
+          />
+        </div>
         <input
           type="range"
           min="0"
@@ -210,31 +257,27 @@ function App() {
           onMouseDown={() => setEnableTransition(false)}
           onMouseUp={() => setEnableTransition(true)}
         />
-        <input
-          type="number"
-          step={10000}
-          min={0}
-          value={income}
-          onChange={(e) => setIncome(e.target.value)}
-        />
       </ControlsContainer>
     </>,
 
     <>
       <p>ค่าลดหย่อน default 100,000 บาท</p>
       <ControlsContainer>
-        <label>ค่าใช้จ่าย</label>
+        <div style={{ display: "flex" }}>
+          <label style={{ flexGrow: 1 }}>ค่าใช้จ่าย</label>
+          <input
+            type="number"
+            step={10000}
+            min={0}
+            value={expense}
+            onChange={(e) => setExpense(e.target.value)}
+            style={{ width: "80px" }}
+          />
+        </div>
         <input
           type="range"
           min="0"
-          max="1000000"
-          value={expense}
-          onChange={(e) => setExpense(e.target.value)}
-        />
-        <input
-          type="number"
-          step={10000}
-          min={0}
+          max="100000"
           value={expense}
           onChange={(e) => setExpense(e.target.value)}
         />
@@ -244,18 +287,21 @@ function App() {
     <>
       <p>ค่าลดหย่อน default 60,000 บาท</p>
       <ControlsContainer>
-        <label>ค่าลดหย่อน</label>
+        <div style={{ display: "flex" }}>
+          <label style={{ flexGrow: 1 }}>ค่าลดหย่อน</label>
+          <input
+            type="number"
+            step={10000}
+            min={0}
+            value={allowance}
+            onChange={(e) => setAllowance(e.target.value)}
+            style={{ width: "80px" }}
+          />
+        </div>
         <input
           type="range"
           min="0"
           max="1000000"
-          value={allowance}
-          onChange={(e) => setAllowance(e.target.value)}
-        />
-        <input
-          type="number"
-          step={10000}
-          min={0}
           value={allowance}
           onChange={(e) => setAllowance(e.target.value)}
         />
@@ -264,24 +310,24 @@ function App() {
 
     <>
       <p>
-        "ภาษีเงินได้บุคคลธรรมดา" คิดจาก "
+        "<span style={{ color: "#f90" }}>ภาษีเงินได้บุคคลธรรมดา</span>" คิดจาก "
         <span style={{ color: "#0af" }}>เงินได้สุทธิ</span>"
       </p>
       <div style={{ display: "flex", alignItems: "center" }}>
         <div style={{ flexGrow: 1, textAlign: "center" }}>
-          <small>รายได้</small>
+          <small style={{ color: "#aaa" }}>รายได้</small>
           <br />
           <small>{numberWithCommas(income)}</small>
         </div>
         <div>-</div>
         <div style={{ flexGrow: 1, textAlign: "center" }}>
-          <small>ค่าใช้จ่าย</small>
+          <small style={{ color: "#aaa" }}>ค่าใช้จ่าย</small>
           <br />
           <small>{numberWithCommas(expense)}</small>
         </div>
         <div>-</div>
         <div style={{ flexGrow: 1, textAlign: "center" }}>
-          <small>ลดหย่อน</small>
+          <small style={{ color: "#aaa" }}>ลดหย่อน</small>
           <br />
           <small>{numberWithCommas(allowance)}</small>
         </div>
@@ -301,17 +347,23 @@ function App() {
 
     <>
       <p>
-        เมื่อคำนวณ "เงินได้สุทธิ" แล้ว จะต้องนำไปเข้า "
-        <span style={{ color: "#f90" }}>ขั้นบันไดภาษี</span>"
+        เมื่อคำนวณ "<span style={{ color: "#0af" }}>เงินได้สุทธิ</span>" แล้ว
+        จะต้องนำไปเข้า "<span style={{ color: "#f90" }}>ขั้นบันไดภาษี</span>"
         เพื่อคำนวณภาษีออกมา
       </p>
 
       <p>สีส้มคือสัดส่วนภาษีที่คุณต้องเสีย</p>
       <div style={{ display: "flex", alignItems: "center" }}>
         <div style={{ flexGrow: 1, flexBasis: 0, textAlign: "center" }}>
+          <small style={{ color: "#aaa" }}>รายได้</small>
+          <br />
+          <span style={{ color: "#aaa" }}>{numberWithCommas(income)}</span>
+        </div>
+        <div>🠖</div>
+        <div style={{ flexGrow: 1, flexBasis: 0, textAlign: "center" }}>
           <small style={{ color: "#0af" }}>เงินได้สุทธิ</small>
           <br />
-          {numberWithCommas(netIncome)} ฿
+          {numberWithCommas(netIncome)}
         </div>
         <div>🠖</div>
         <div style={{ flexGrow: 1, flexBasis: 0, textAlign: "center" }}>
@@ -321,7 +373,7 @@ function App() {
         </div>
       </div>
     </>,
-  ]);
+  ];
 
   useEffect(() => {
     if (currentNarrativeStep == 1) {
@@ -344,52 +396,87 @@ function App() {
       <StoryIndicator
         currentStep={currentNarrativeStep}
         totalSteps={narrativeSteps.length}
-        style={{marginBottom: '20px'}}
+        style={{ marginBottom: "20px" }}
       />
-      <ChartContainer>
-        <D3Component
-          income={income}
-          expense={expense}
-          allowance={allowance}
-          taxBrackets={taxBrackets}
-          isPullTax={isPullTax}
-          setPullTax={setPullTax}
-          enableTransition={enableTransition}
-          isActivateTax={isActivateTax}
-        />
-      </ChartContainer>
-      <SideContainer>
-        <ContentContainer>
-          {narrativeSteps.map((step, i) => (
-            <>
-              <Step status={Math.sign(i - currentNarrativeStep)}>{step}</Step>
-            </>
-          ))}
-        </ContentContainer>
-        <div style={{ display: "flex", marginTop: "20px", gap: "20px" }}>
-          <Button
-            style={{ flexGrow: 1, flexBasis: 0, textAlign: "center" }}
-            onClick={() =>
-              setCurrentNarrativeStep(Math.max(currentNarrativeStep - 1, 0))
-            }
-            disabled={currentNarrativeStep === 0}
-            secondary
-          >
-            ย้อนกลับ
-          </Button>
-          <Button
-            style={{ flexGrow: 1, flexBasis: 0, textAlign: "center" }}
-            onClick={() =>
-              setCurrentNarrativeStep(
-                Math.min(currentNarrativeStep + 1, narrativeSteps.length - 1)
-              )
-            }
-            disabled={currentNarrativeStep === narrativeSteps.length - 1}
-          >
-            ต่อไป
-          </Button>
-        </div>
-      </SideContainer>
+      <Step
+        status={Math.sign(-1 - currentNarrativeStep)}
+        style={{
+          gap: "10px",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <h1>taxvisualizer</h1>
+        <p>คำนวณภาษีอย่างเห็นภาพ</p>
+        <Button
+          style={{
+            padding: "8px 16px",
+            borderRadius: 8,
+            backgroundColor: "#f80",
+            fontWeight: "bold",
+            fontSize: "1rem",
+          }}
+          onClick={() => setCurrentNarrativeStep(0)}
+        >
+          เริ่มเลย
+        </Button>
+      </Step>
+
+      {currentNarrativeStep >= 0 && (
+        <>
+          <ChartContainer>
+            <D3Component
+              income={income}
+              expense={expense}
+              allowance={allowance}
+              taxBrackets={taxBrackets}
+              isPullTax={isPullTax}
+              setPullTax={setPullTax}
+              enableTransition={enableTransition}
+              isActivateTax={isActivateTax}
+            />
+          </ChartContainer>
+          <SideContainer>
+            <ContentContainer>
+              {narrativeSteps.map((step, i) => (
+                <>
+                  <Step status={Math.sign(i - currentNarrativeStep)}>
+                    {step}
+                  </Step>
+                </>
+              ))}
+            </ContentContainer>
+            <div style={{ display: "flex", marginTop: "20px", gap: "20px" }}>
+              <Button
+                style={{ flexGrow: 1, flexBasis: 0, textAlign: "center" }}
+                onClick={() =>
+                  setCurrentNarrativeStep(
+                    Math.max(currentNarrativeStep - 1, -1)
+                  )
+                }
+                // disabled={currentNarrativeStep === 0}
+                secondary
+              >
+                ย้อนกลับ
+              </Button>
+              <Button
+                style={{ flexGrow: 1, flexBasis: 0, textAlign: "center" }}
+                onClick={() =>
+                  setCurrentNarrativeStep(
+                    Math.min(
+                      currentNarrativeStep + 1,
+                      narrativeSteps.length - 1
+                    )
+                  )
+                }
+                disabled={currentNarrativeStep === narrativeSteps.length - 1}
+              >
+                ต่อไป
+              </Button>
+            </div>
+          </SideContainer>
+        </>
+      )}
     </PageContainer>
   );
 }
