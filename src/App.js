@@ -9,6 +9,7 @@ import StoryIndicator from "./components/StoryIndicator";
 const ChartContainer = styled.div`
   /* padding: 30px; */
   width: 100%;
+  margin-top: 10px;
   /* height: 50vh; */
   flex: 1;
   position: relative;
@@ -114,7 +115,7 @@ const ContentContainer = styled.div`
 
 const PageContainer = styled.div`
   padding: 30px;
-  padding-top: 15px;
+  /* padding-top: 15px; */
   position: absolute;
   top: 0;
   left: 0;
@@ -443,7 +444,7 @@ function App() {
     <>
       <p style={{ textAlign: "center" }}>
         "<span style={{ color: "#0af" }}>เงินได้สุทธิ</span>" ของคุณคือ{" "}
-        {numberWithCommas(netIncome)} บาท
+        <b>{numberWithCommas(netIncome)}</b> บาท
       </p>
       <NetIncomeEquation
         income={income}
@@ -496,9 +497,13 @@ function App() {
     </>,
 
     <>
-      <p style={{marginBottom: '0.5rem'}}><b>ลองปรับตัวเลขดู</b></p>
+      <p style={{ marginBottom: "0.5rem" }}>
+        <b>ลองปรับตัวเลขดู</b>
+      </p>
       <ControlsGrid>
-        <label style={{ flexGrow: 1 }}><small>เงินเดือน</small></label>
+        <label style={{ flexGrow: 1 }}>
+          <small>เงินเดือน</small>
+        </label>
         <input
           type="range"
           min="0"
@@ -532,11 +537,15 @@ function App() {
         >
           เงินเดือน &times; 12 = รายได้ <b>{numberWithCommas(income)}</b> บาท/ปี
         </small> */}
-        <label style={{ flexGrow: 1 }}><small>ค่าใช้จ่าย</small></label>
+        <label style={{ flexGrow: 1 }}>
+          <small>ค่าใช้จ่าย</small>
+        </label>
         <div style={{ gridColumn: "2 / -1" }}>
           <small>หักได้ {numberWithCommas(expense)} บาท</small>
         </div>
-        <label style={{ flexGrow: 1 }}><small>ค่าลดหย่อน</small></label>
+        <label style={{ flexGrow: 1 }}>
+          <small>ค่าลดหย่อน</small>
+        </label>
         <input
           type="range"
           min="60000"
@@ -604,181 +613,189 @@ function App() {
   }, [currentNarrativeStep, allowance, income, expense]);
 
   return (
-    <PageContainer>
+    <>
       <StoryIndicator
         currentStep={currentNarrativeStep}
         totalSteps={narrativeSteps.length}
         style={{ marginBottom: "20px" }}
       />
-      <Step
-        status={Math.sign(-1 - currentNarrativeStep)}
-        style={{
-          gap: "10px",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#222",
-          zIndex: 100,
-          top: 50,
-          padding: 50,
-          paddingTop: 0,
-          textAlign: "center",
-        }}
-      >
-        <h1>Tax, visualized.</h1>
-        <p>
-          คำนวณภาษียากจัง!?
-          <br />
-          มาลองคำนวณภาษีมนุษย์เงินเดือน
-          <br />
-          แบบเห็นภาพกัน
-        </p>
-        <Button
+      <PageContainer>
+        <Step
+          status={Math.sign(-1 - currentNarrativeStep)}
           style={{
-            padding: "8px 16px",
-            borderRadius: 8,
-            backgroundColor: "#f80",
-            fontWeight: "bold",
-            fontSize: "1rem",
+            gap: "10px",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#222",
+            zIndex: 100,
+            top: 50,
+            padding: 50,
+            paddingTop: 0,
+            textAlign: "center",
           }}
-          onClick={() => setCurrentNarrativeStep(0)}
         >
-          เริ่มเลย
-        </Button>
-      </Step>
-
-      <Step
-        status={Math.sign(narrativeSteps.length - currentNarrativeStep)}
-        style={{
-          gap: "10px",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#222",
-          zIndex: 100,
-          top: 50,
-          padding: 50,
-          paddingTop: 0,
-          textAlign: "center",
-        }}
-      >
-        <p>
-          ถ้าชอบ visualization นี้
-          <br />
-          แชร์ให้เพื่อนดูต่อได้เลย
-        </p>
-        <div style={{ display: "flex", gap: "10px" }}>
-          <div
-            class="fb-share-button"
-            data-href="https://taepras.github.io/taxvisualizer/"
-            data-layout="button"
-            data-size="large"
+          <h1>Tax, visualized.</h1>
+          <p>
+            คำนวณภาษียากจัง!?
+            <br />
+            มาลองคำนวณภาษีมนุษย์เงินเดือน
+            <br />
+            แบบเห็นภาพกัน
+          </p>
+          <Button
+            style={{
+              padding: "8px 16px",
+              borderRadius: 8,
+              backgroundColor: "#f80",
+              fontWeight: "bold",
+              fontSize: "1rem",
+            }}
+            onClick={() => setCurrentNarrativeStep(0)}
           >
+            เริ่มเลย
+          </Button>
+        </Step>
+
+        <Step
+          status={Math.sign(narrativeSteps.length - currentNarrativeStep)}
+          style={{
+            gap: "10px",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#222",
+            zIndex: 100,
+            top: 50,
+            padding: 50,
+            paddingTop: 0,
+            textAlign: "center",
+          }}
+        >
+          <p>
+            ถ้าชอบ visualization นี้
+            <br />
+            แชร์ให้เพื่อนดูต่อได้เลย
+          </p>
+          <div style={{ display: "flex", gap: "10px" }}>
+            <div
+              class="fb-share-button"
+              data-href="https://taepras.github.io/taxvisualizer/"
+              data-layout="button"
+              data-size="large"
+            >
+              <a
+                target="_blank"
+                href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Ftaepras.github.io%2Ftaxvisualizer%2F&amp;src=sdkpreparse"
+                class="fb-xfbml-parse-ignore"
+              >
+                Share
+              </a>
+            </div>
             <a
-              target="_blank"
-              href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Ftaepras.github.io%2Ftaxvisualizer%2F&amp;src=sdkpreparse"
-              class="fb-xfbml-parse-ignore"
+              href="https://twitter.com/share?ref_src=twsrc%5Etfw"
+              class="twitter-share-button"
+              data-size="large"
+              data-url="https://taepras.github.io/taxvisualizer/"
+              data-via="taepras"
+              data-dnt="true"
+              data-show-count="false"
             >
-              Share
+              Tweet
             </a>
+            <div
+              class="line-it-button"
+              data-lang="en"
+              data-type="share-a"
+              data-ver="3"
+              data-url="https://taepras.github.io/taxvisualizer/"
+              data-color="default"
+              data-size="large"
+              data-count="false"
+              // style={{display: 'none'}}
+            ></div>
           </div>
-          <a
-            href="https://twitter.com/share?ref_src=twsrc%5Etfw"
-            class="twitter-share-button"
-            data-size="large"
-            data-url="https://taepras.github.io/taxvisualizer/"
-            data-via="taepras"
-            data-dnt="true"
-            data-show-count="false"
-          >
-            Tweet
-          </a>
-          <div
-            class="line-it-button"
-            data-lang="en"
-            data-type="share-a"
-            data-ver="3"
-            data-url="https://taepras.github.io/taxvisualizer/"
-            data-color="default"
-            data-size="large"
-            data-count="false"
-            // style={{display: 'none'}}
-          ></div>
-        </div>
 
-        <div style={{ display: "flex", marginTop: "1rem", gap: "10px" }}>
-          <Button
-            style={{
-              border: "none",
-              fontSize: "1rem",
-              textDecoration: "underline",
-            }}
-            secondary
-            onClick={() => setCurrentNarrativeStep(narrativeSteps.length - 1)}
-          >
-            &laquo; ย้อนกลับ
-          </Button>
-          <Button
-            style={{
-              border: "none",
-              fontSize: "1rem",
-              textDecoration: "underline",
-            }}
-            secondary
-            onClick={() => { window.location.href = '' }}
-          >
-            &laquo; เริ่มใหม่
-          </Button>
-        </div>
-      </Step>
-
-      <>
-        <ChartContainer>
-          <D3Component
-            income={income}
-            expense={enableExpense ? expense : 0}
-            allowance={allowance}
-            taxBrackets={taxBrackets}
-            isPullTax={isPullTax}
-            setPullTax={setPullTax}
-            enableTransition={enableTransition}
-            isActivateTax={isActivateTax}
-            showBrackets={showBrackets}
-            isBlink={currentNarrativeStep == 6}
-          />
-        </ChartContainer>
-        <SideContainer>
-          <ContentContainer>
-            {narrativeSteps.map((step, i) => (
-              <>
-                <Step status={Math.sign(i - currentNarrativeStep)}>{step}</Step>
-              </>
-            ))}
-          </ContentContainer>
-          <div style={{ display: "flex", marginTop: "20px", gap: "20px" }}>
+          <div style={{ display: "flex", marginTop: "1rem", gap: "10px" }}>
             <Button
-              style={{ flexGrow: 1, flexBasis: 0, textAlign: "center" }}
-              onClick={() =>
-                setCurrentNarrativeStep(Math.max(currentNarrativeStep - 1, -1))
-              }
-              // disabled={currentNarrativeStep === 0}
+              style={{
+                border: "none",
+                fontSize: "1rem",
+                textDecoration: "underline",
+              }}
               secondary
+              onClick={() => setCurrentNarrativeStep(narrativeSteps.length - 1)}
             >
-              ย้อนกลับ
+              &laquo; ย้อนกลับ
             </Button>
             <Button
-              style={{ flexGrow: 1, flexBasis: 0, textAlign: "center" }}
-              onClick={() =>
-                setCurrentNarrativeStep(
-                  Math.min(currentNarrativeStep + 1, narrativeSteps.length)
-                )
-              }
-              disabled={currentNarrativeStep === narrativeSteps.length}
+              style={{
+                border: "none",
+                fontSize: "1rem",
+                textDecoration: "underline",
+              }}
+              secondary
+              onClick={() => {
+                window.location.href = "";
+              }}
             >
-              ต่อไป
+              &laquo; เริ่มใหม่
             </Button>
           </div>
-        </SideContainer>
-      </>
-    </PageContainer>
+        </Step>
+
+        <>
+          <ChartContainer>
+            <D3Component
+              income={income}
+              expense={enableExpense ? expense : 0}
+              allowance={allowance}
+              taxBrackets={taxBrackets}
+              isPullTax={isPullTax}
+              setPullTax={setPullTax}
+              enableTransition={enableTransition}
+              isActivateTax={isActivateTax}
+              showBrackets={showBrackets}
+              isBlink={currentNarrativeStep == 6}
+            />
+          </ChartContainer>
+          <SideContainer>
+            <ContentContainer>
+              {narrativeSteps.map((step, i) => (
+                <>
+                  <Step status={Math.sign(i - currentNarrativeStep)}>
+                    {step}
+                  </Step>
+                </>
+              ))}
+            </ContentContainer>
+            <div style={{ display: "flex", marginTop: "20px", gap: "20px" }}>
+              <Button
+                style={{ flexGrow: 1, flexBasis: 0, textAlign: "center" }}
+                onClick={() =>
+                  setCurrentNarrativeStep(
+                    Math.max(currentNarrativeStep - 1, -1)
+                  )
+                }
+                // disabled={currentNarrativeStep === 0}
+                secondary
+              >
+                ย้อนกลับ
+              </Button>
+              <Button
+                style={{ flexGrow: 1, flexBasis: 0, textAlign: "center" }}
+                onClick={() =>
+                  setCurrentNarrativeStep(
+                    Math.min(currentNarrativeStep + 1, narrativeSteps.length)
+                  )
+                }
+                disabled={currentNarrativeStep === narrativeSteps.length}
+              >
+                ต่อไป
+              </Button>
+            </div>
+          </SideContainer>
+        </>
+      </PageContainer>
+    </>
   );
 }
 
