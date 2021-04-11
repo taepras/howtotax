@@ -740,6 +740,12 @@ function App() {
               &laquo; เริ่มใหม่
             </Button>
           </div>
+
+          <p style={{ marginTop: '30px', color: '#888' }}>
+            Tax, visualized. was created by<br/>
+            <a href="https://taepras.com" style={{ color: '#888' }}>Tae Prasongpongchai</a>
+            </p>
+
         </Step>
 
         <>
@@ -754,7 +760,12 @@ function App() {
               enableTransition={enableTransition}
               isActivateTax={isActivateTax}
               showBrackets={showBrackets}
-              isBlink={currentNarrativeStep == 6}
+              isBlink={{
+                tax: currentNarrativeStep == 6,
+                income: currentNarrativeStep == 4,
+                // expense: currentNarrativeStep == 2,
+                // allowance: currentNarrativeStep == 3,
+              }}
             />
           </ChartContainer>
           <SideContainer>
