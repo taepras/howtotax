@@ -37,15 +37,14 @@ export const D3Component = ({
     expense,
     allowance,
     taxBrackets,
-    // width = 800,
-    // height = 500,
     padding = {
         left: 35,
         right: 0,
         top: 0,
-        bottom: 50,
+        bottom: 30,
     },
     isPullTax = false,
+    isActivateTax = true,
     setPullTax = (x) => {},
     transitionTime = 500,
     enableTransition = true
@@ -61,30 +60,7 @@ export const D3Component = ({
 
     const transitionDuration = useMemo(() => enableTransition ? transitionTime : 0, [enableTransition, transitionTime]);
 
-    // const { width, height, chartContainer } = useResizeDetector();
-
     const d3Container = useRef(null);
-
-    // const { observe, unobserve, width, height, entry } = useDimensions({
-    //     onResize: ({ observe, unobserve, width, height, entry }) => {
-    //         // Triggered whenever the size of the target is changed...
-
-    //         unobserve(); // To stofp observing the current target element
-    //         observe(); // To re-start observing the current target element
-    //     },
-    // });
-
-    // const height = d3Container.current.clientHeight;
-    // const width = d3Container.current.clientWidth
-    // const [width, setWidth] = useState(0)
-    // const [height, setHeight] = useState(0)
-
-    // useLayoutEffect(() => {
-    //     if (d3Container.current) {
-    //         setWidth(d3Container.current.parentElement.offsetWidth);
-    //         setHeight(d3Container.current.parentElement.offsetHeight);
-    //     }
-    // }, [d3Container])
 
     const cleanedExpense = useMemo(() => expense < (income - allowance) ? +expense : +Math.max(0, income - allowance), [income, expense]);
     const cleanedAllowance = useMemo(() => allowance < income ? +allowance : +income, [income, allowance]);
@@ -181,6 +157,7 @@ export const D3Component = ({
             svg.select('path.tax-stairs-camouflage')
                 .attr('fill', '#222')
                 .transition().duration(transitionDuration)
+                .attr('opacity', isActivateTax ? 1 : 0)
                 .attr('d', generateTaxBracketsPathD)
 
             svg.select('path.tax-stairs')
@@ -188,7 +165,7 @@ export const D3Component = ({
                 .transition().duration(transitionDuration)
                 .attr('d', generateTaxBracketsPathD)
                 .attr('transform', isPullTax ? `translate(${-50}, 0)` : 'translate(0, 0)')
-                .style('opacity', isPullTax ? 0 : 1);
+                .style('opacity', isActivateTax && !isPullTax ? 1 : 0);
 
             const bracketLineGroups = svg.select('g.tax-lines')
                 .selectAll('g')
