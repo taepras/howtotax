@@ -30,7 +30,7 @@ const PageContainer = styled.div`
 const ControlsContainer = styled.div`
   /* margin-top: 30px; */
   display: grid;
-  grid-template-columns: 30% auto;
+  grid-template-columns: auto auto 80px;
   column-gap: 10px;
   row-gap: 15px;
   flex-direction: column;
@@ -41,6 +41,10 @@ const ControlsContainer = styled.div`
     margin-left: 80px;
     width: 400px;
     max-width: 40%;
+  }
+
+  label {
+    white-space: nowrap;
   }
 `;
 
@@ -132,70 +136,68 @@ function App() {
       </ChartContainer>
       <ControlsContainer>
         <label>รายได้</label>
-        <InputGroup>
-          <input
-            type="number"
-            step={10000}
-            min={0}
-            value={income}
-            onChange={(e) => setIncome(e.target.value)}
-          />
-          <input
-            type="range"
-            min="0"
-            max="10000000"
-            value={income}
-            onChange={(e) => setIncome(e.target.value)}
-          />
-        </InputGroup>
+        <input
+          type="range"
+          min="0"
+          max="10000000"
+          value={income}
+          onChange={(e) => setIncome(e.target.value)}
+        />
+        <input
+          type="number"
+          step={10000}
+          min={0}
+          value={income}
+          onChange={(e) => setIncome(e.target.value)}
+        />
 
         <label>ค่าใช้จ่าย</label>
-        <InputGroup>
-          <input
-            type="number"
-            step={10000}
-            min={0}
-            value={expense}
-            onChange={(e) => setExpense(e.target.value)}
-          />
-          <input
-            type="range"
-            min="0"
-            max="1000000"
-            value={expense}
-            onChange={(e) => setExpense(e.target.value)}
-          />
-        </InputGroup>
+        <input
+          type="range"
+          min="0"
+          max="1000000"
+          value={expense}
+          onChange={(e) => setExpense(e.target.value)}
+        />
+        <input
+          type="number"
+          step={10000}
+          min={0}
+          value={expense}
+          onChange={(e) => setExpense(e.target.value)}
+        />
 
         <label>ค่าลดหย่อน</label>
-        <InputGroup>
-          <input
-            type="number"
-            step={10000}
-            min={0}
-            value={allowance}
-            onChange={(e) => setAllowance(e.target.value)}
-          />
-          <input
-            type="range"
-            min="0"
-            max="1000000"
-            value={allowance}
-            onChange={(e) => setAllowance(e.target.value)}
-          />
-        </InputGroup>
+        <input
+          type="range"
+          min="0"
+          max="1000000"
+          value={allowance}
+          onChange={(e) => setAllowance(e.target.value)}
+        />
+        <input
+          type="number"
+          step={10000}
+          min={0}
+          value={allowance}
+          onChange={(e) => setAllowance(e.target.value)}
+        />
 
-        <div>เงินได้สุทธิ</div>
+        {/* <div>เงินได้สุทธิ</div>
         <div>{netIncome}</div>
         <div>ภาษีที่ต้องเสีย</div>
         <div>
-          {taxFinal}<br/>
-          <small>คิดเป็น <b>{((taxFinal / income) * 100).toFixed(1)}%</b> ของรายได้ทั้งหมด</small>
-        </div>
+          {taxFinal}
+          <br />
+          <small>
+            คิดเป็น <b>{((taxFinal / income) * 100).toFixed(1)}%</b>{" "}
+            ของรายได้ทั้งหมด
+          </small>
+        </div> */}
         <div style={{ gridColumn: "1 / 3" }}>
           <button
             onClick={() => setPullTax(!isPullTax)}
-            style={{ display: 'block', width: '100%', gridColumn: "1 / 3" }}
+            style={{ display: "block", width: "100%", gridColumn: "1 / 3" }}
           >
             Tax
           </button>

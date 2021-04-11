@@ -4,6 +4,7 @@ import * as d3 from 'd3';
 import useDimensions from "react-cool-dimensions";
 import styled from 'styled-components';
 import { useResizeDetector } from 'react-resize-detector';
+import { transition } from 'd3';
 
 
 const SvgContainer = styled.div`
@@ -114,6 +115,18 @@ export const D3Component = ({
 
     const numberWithCommas = (x) => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 
+    const generateTaxBracketsPathD = d => {
+        let pathD = 'M 0 0 ';
+        pathD += taxBrackets.map((d) => {
+            return ''
+                + `L ${scaleTaxRate(d.taxRate)} ${scaleIncome(d.minNetIncome)} `
+                + `L ${scaleTaxRate(d.taxRate)} ${scaleIncome(d.maxNetIncome)} `
+        }).join('')
+        pathD += `L 0 ${scaleIncome(taxBrackets[taxBrackets.length - 1].maxNetIncome)} `
+        pathD += `Z`
+        return pathD;
+    }
+
     useLayoutEffect(() => {
         if (d3Container.current) {
 
@@ -131,6 +144,12 @@ export const D3Component = ({
                 .attr('width', barWidth)
                 .transition().duration(transitionDuration)
                 .style('fill', '#08f')
+                .attr('height', Math.max(0, scaleIncome(netIncome)));
+
+            svg.select('rect.net-income-mask')
+                .attr('width', barWidth)
+                .transition().duration(transitionDuration)
+                // .style('fill', '#08f')
                 .attr('height', Math.max(0, scaleIncome(netIncome)));
 
             console.log('netIncome + cleanedAllowance', netIncome + cleanedAllowance, cleanedAllowance, scaleIncome(cleanedAllowance))
@@ -163,7 +182,17 @@ export const D3Component = ({
                 .attr('x', barWidth / 2)
                 .attr('y', -scaleIncome(income - expense / 2));
 
-
+            svg.select('path.tax-stairs-camouflage')
+                .attr('fill', '#222')
+                .transition().duration(transitionDuration)
+                .attr('d', generateTaxBracketsPathD)
+                
+                svg.select('path.tax-stairs')
+                .attr('fill', '#f80')
+                .transition().duration(transitionDuration)
+                .attr('d', generateTaxBracketsPathD)
+                .attr('transform', isPullTax ? `translate(${-50}, 0)` : 'translate(0, 0)')
+                .style('opacity', isPullTax ? 0 : 1);
 
             const bracketLineGroups = svg.select('g.tax-lines')
                 .selectAll('g')
@@ -234,65 +263,65 @@ export const D3Component = ({
 
 
 
-            const taxParts = svg.select('g.tax-parts')
-                .selectAll('rect')
-                .data(taxBrackets)
+            // const taxParts = svg.select('g.tax-parts')
+            //     .selectAll('rect')
+            //     .data(taxBrackets)
 
-            const taxPartsEnter = taxParts
-                .enter()
-                .append('rect')
-                .style('fill', '#f80')
-                .style('fill-opacity', 1)
+            // const taxPartsEnter = taxParts
+            //     .enter()
+            //     .append('rect')
+            //     .style('fill', '#f80')
+            //     .style('fill-opacity', 1)
 
-            taxParts.merge(taxPartsEnter)
-                .attr('x', 0)   // d => scaleTaxRate(d.taxRate))
-                .attr('width', d => scaleTaxRate(d.taxRate))
-                .transition().duration(transitionDuration)
-                .attr('y', d => scaleIncome(d.minNetIncome))
-                .attr('height', d => {
-                    if (netIncome > d.minNetIncome) {
-                        if (netIncome < d.maxNetIncome)
-                            return scaleIncome(netIncome - d.minNetIncome)
-                        else
-                            return scaleIncome(d.maxNetIncome - d.minNetIncome);
-                    } else {
-                        return 0;
-                    }
-                })
+            // taxParts.merge(taxPartsEnter)
+            //     .attr('x', 0)   // d => scaleTaxRate(d.taxRate))
+            //     .attr('width', d => scaleTaxRate(d.taxRate))
+            //     .transition().duration(transitionDuration)
+            //     .attr('height', d => {
+            //         if (netIncome > d.minNetIncome) {
+            //             if (netIncome < d.maxNetIncome)
+            //             return scaleIncome(netIncome - d.minNetIncome)
+            //             else
+            //             return scaleIncome(d.maxNetIncome - d.minNetIncome);
+            //         } else {
+            //             return 0;
+            //         }
+            //     })
+            //     .attr('y', d => scaleIncome(d.minNetIncome))
 
-            console.log(isPullTax);
-            svg.select('g.tax-parts')
-                .transition(transitionDuration)
-                .attr('transform', isPullTax ? `translate(${-50}, 0)` : 'translate(0, 0)')
-                .style('opacity', isPullTax ? 0 : 1);
+            // console.log(isPullTax);
+            // svg.select('g.tax-parts')
+            //     .transition(transitionDuration)
+            //     .attr('transform', isPullTax ? `translate(${-50}, 0)` : 'translate(0, 0)')
+            //     .style('opacity', isPullTax ? 0 : 1);
 
 
-            const taxCamouflageParts = svg.select('g.tax-camouflage')
-                .selectAll('rect')
-                .data(taxBrackets)
+            // const taxCamouflageParts = svg.select('g.tax-camouflage')
+            //     .selectAll('rect')
+            //     .data(taxBrackets)
 
-            const taxCamouflagePartsEnter = taxCamouflageParts
-                .enter()
-                .append('rect')
-                .style('fill', '#222')
-                .style('stroke', '#222')
-                .style('fill-opacity', 1)
+            // const taxCamouflagePartsEnter = taxCamouflageParts
+            //     .enter()
+            //     .append('rect')
+            //     .style('fill', '#222')
+            //     .style('stroke', '#222')
+            //     .style('fill-opacity', 1)
 
-            taxCamouflageParts.merge(taxCamouflagePartsEnter)
-                .attr('x', 0)   // d => scaleTaxRate(d.taxRate))
-                .attr('width', d => scaleTaxRate(d.taxRate))
-                .transition().duration(transitionDuration)
-                .attr('y', d => scaleIncome(d.minNetIncome))
-                .attr('height', d => {
-                    if (netIncome > d.minNetIncome) {
-                        if (netIncome < d.maxNetIncome)
-                            return scaleIncome(netIncome - d.minNetIncome)
-                        else
-                            return scaleIncome(d.maxNetIncome - d.minNetIncome);
-                    } else {
-                        return 0;
-                    }
-                })
+            // taxCamouflageParts.merge(taxCamouflagePartsEnter)
+            //     .attr('x', 0)   // d => scaleTaxRate(d.taxRate))
+            //     .attr('width', d => scaleTaxRate(d.taxRate))
+            //     .transition().duration(transitionDuration)
+            //     .attr('height', d => {
+            //         if (netIncome > d.minNetIncome) {
+            //             if (netIncome < d.maxNetIncome)
+            //                 return scaleIncome(netIncome - d.minNetIncome)
+            //             else
+            //                 return scaleIncome(d.maxNetIncome - d.minNetIncome);
+            //         } else {
+            //             return 0;
+            //         }
+            //     })
+            //     .attr('y', d => scaleIncome(d.minNetIncome))
 
 
             // AXES
@@ -379,6 +408,11 @@ export const D3Component = ({
                 ref={d3Container}
             // viewBox={`0 0 ${width} ${height}`}
             >
+                <defs>
+                    <clipPath id="net-income-mask">
+                        <rect className="net-income-mask" />
+                    </clipPath>
+                </defs>
                 <g transform={`translate(0, ${height}) scale(1, -1)`}>
                     <g className="container">
                         <rect className="net-income" />
@@ -394,11 +428,13 @@ export const D3Component = ({
                             fill: '#fff', fontSize: '0.75rem', alignmentBaseline: 'middle', textAnchor: 'middle', fillOpacity: 0.4
                         }} />
                         <g className="tax-lines" />
-                        <g className="tax-camouflage" />
+                        {/* <g className="tax-camouflage" clip-path="url(#cut-off-bottom)" /> */}
                         <g className="axis-income-top" />
                         <g className="axis-income-bottom" />
                         <g className="axis-tax-rate" />
-                        <g className="tax-parts" />
+                        {/* <g className="tax-parts" clip-path="url(#cut-off-bottom)" /> */}
+                        <path className="tax-stairs-camouflage" clip-path="url(#net-income-mask)" />
+                        <path className="tax-stairs" clip-path="url(#net-income-mask)" />
                     </g>
                 </g>
             </CartesianSvg>
