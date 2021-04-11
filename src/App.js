@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { D3Component } from "./components/D3Component";
 import styled from "styled-components";
 import "./App.css";
+import { numberWithCommas } from "./utils/display";
 
 const ChartContainer = styled.div`
   /* padding: 30px; */
@@ -10,6 +11,8 @@ const ChartContainer = styled.div`
   flex: 1;
   position: relative;
 `;
+
+const SideContainer = styled.div``;
 
 const PageContainer = styled.div`
   padding: 30px;
@@ -34,7 +37,7 @@ const ControlsContainer = styled.div`
   column-gap: 10px;
   row-gap: 15px;
   flex-direction: column;
-  margin-bottom: 30px;
+  /* margin-bottom: 30px; */
   align-content: center;
 
   @media (min-width: 768px) {
@@ -58,6 +61,7 @@ function App() {
   const [income, setIncome] = useState(480000);
   const [expense, setExpense] = useState(100000);
   const [allowance, setAllowance] = useState(60000);
+  const [enableTransition, setEnableTransition] = useState(true);
 
   const netIncome = useMemo(() => {
     return income - expense - allowance;
@@ -132,77 +136,75 @@ function App() {
           allowance={allowance}
           taxBrackets={taxBrackets}
           isPullTax={isPullTax}
+          setPullTax={setPullTax}
+          enableTransition={enableTransition}
         />
       </ChartContainer>
-      <ControlsContainer>
-        <label>รายได้</label>
-        <input
-          type="range"
-          min="0"
-          max="10000000"
-          value={income}
-          onChange={(e) => setIncome(e.target.value)}
-        />
-        <input
-          type="number"
-          step={10000}
-          min={0}
-          value={income}
-          onChange={(e) => setIncome(e.target.value)}
-        />
+      <SideContainer>
+        <ControlsContainer>
+          <label>รายได้</label>
+          <input
+            type="range"
+            min="0"
+            max="10000000"
+            value={income}
+            onChange={(e) => setIncome(e.target.value)}
+            onMouseDown={() => setEnableTransition(false)}
+            onMouseUp={() => setEnableTransition(true)}
+          />
+          <input
+            type="number"
+            step={10000}
+            min={0}
+            value={income}
+            onChange={(e) => setIncome(e.target.value)}
+          />
 
-        <label>ค่าใช้จ่าย</label>
-        <input
-          type="range"
-          min="0"
-          max="1000000"
-          value={expense}
-          onChange={(e) => setExpense(e.target.value)}
-        />
-        <input
-          type="number"
-          step={10000}
-          min={0}
-          value={expense}
-          onChange={(e) => setExpense(e.target.value)}
-        />
+          <label>ค่าใช้จ่าย</label>
+          <input
+            type="range"
+            min="0"
+            max="1000000"
+            value={expense}
+            onChange={(e) => setExpense(e.target.value)}
+          />
+          <input
+            type="number"
+            step={10000}
+            min={0}
+            value={expense}
+            onChange={(e) => setExpense(e.target.value)}
+          />
 
-        <label>ค่าลดหย่อน</label>
-        <input
-          type="range"
-          min="0"
-          max="1000000"
-          value={allowance}
-          onChange={(e) => setAllowance(e.target.value)}
-        />
-        <input
-          type="number"
-          step={10000}
-          min={0}
-          value={allowance}
-          onChange={(e) => setAllowance(e.target.value)}
-        />
-
-        {/* <div>เงินได้สุทธิ</div>
-        <div>{netIncome}</div>
-        <div>ภาษีที่ต้องเสีย</div>
-        <div>
-          {taxFinal}
-          <br />
-          <small>
-            คิดเป็น <b>{((taxFinal / income) * 100).toFixed(1)}%</b>{" "}
-            ของรายได้ทั้งหมด
-          </small>
-        </div> */}
-        <div style={{ gridColumn: "1 / 3" }}>
-          <button
-            onClick={() => setPullTax(!isPullTax)}
-            style={{ display: "block", width: "100%", gridColumn: "1 / 3" }}
-          >
-            Tax
-          </button>
+          <label>ค่าลดหย่อน</label>
+          <input
+            type="range"
+            min="0"
+            max="1000000"
+            value={allowance}
+            onChange={(e) => setAllowance(e.target.value)}
+          />
+          <input
+            type="number"
+            step={10000}
+            min={0}
+            value={allowance}
+            onChange={(e) => setAllowance(e.target.value)}
+          />
+        </ControlsContainer>
+        <div style={{ display: "flex", marginBottom: "20px" }}>
+          <div style={{ flexGrow: 1, flexBasis: 0, textAlign: "center" }}>
+            <small>เงินได้สุทธิ</small>
+            <br />
+            <b>{numberWithCommas(netIncome)} ฿</b>
+          </div>
+          <div style={{ flexGrow: 1, flexBasis: 0, textAlign: "center" }}>
+            <small>ภาษี</small>
+            <br />
+            <b>{numberWithCommas(taxFinal)} ฿</b>
+          </div>
         </div>
-      </ControlsContainer>
+      </SideContainer>
     </PageContainer>
   );
 }

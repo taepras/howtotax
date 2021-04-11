@@ -46,6 +46,7 @@ export const D3Component = ({
         bottom: 50,
     },
     isPullTax = false,
+    setPullTax = (x) => {},
     transitionTime = 500,
     enableTransition = true
 }) => {
@@ -130,11 +131,6 @@ export const D3Component = ({
     useLayoutEffect(() => {
         if (d3Container.current) {
 
-            // console.log(d3Container.current);
-
-
-            // const boundingRect = d3Container.current.getClientBoundingRect();
-
             const svg = d3.select(d3Container.current);
 
             svg.select('g.container')
@@ -186,8 +182,8 @@ export const D3Component = ({
                 .attr('fill', '#222')
                 .transition().duration(transitionDuration)
                 .attr('d', generateTaxBracketsPathD)
-                
-                svg.select('path.tax-stairs')
+
+            svg.select('path.tax-stairs')
                 .attr('fill', '#f80')
                 .transition().duration(transitionDuration)
                 .attr('d', generateTaxBracketsPathD)
@@ -207,13 +203,6 @@ export const D3Component = ({
             bracketLineGroupsEnter.append('text').classed('bracket-min-text', true)
             bracketLineGroupsEnter.append('rect').classed('bracket-rect', true)
             bracketLineGroupsEnter.append('line').classed('bracket-line', true)
-
-            // bracketTextEnter
-            //     .append('text')
-            //     .text(d => `อัตราภาษี ${d.taxRate * 100}%\nเริ่มที่เงินได้ ${d.minNetIncome}`)
-            // bracketTextEnter
-            //     .append('text')
-            //     .text(d => `อัตราภาษี ${d.taxRate * 100}%\nเริ่มที่เงินได้ ${d.minNetIncome}`)
 
             bracketLineGroups.merge(bracketLineGroupsEnter)
                 .select('rect')
@@ -261,69 +250,6 @@ export const D3Component = ({
                 .style('fill-opacity', (d, i) => i != 0 && scaleIncome(d.maxNetIncome - d.minNetIncome) > 20 ? 1 : 0)
                 .attr('y', d => -scaleIncome(d.minNetIncome) - 5)
 
-
-
-            // const taxParts = svg.select('g.tax-parts')
-            //     .selectAll('rect')
-            //     .data(taxBrackets)
-
-            // const taxPartsEnter = taxParts
-            //     .enter()
-            //     .append('rect')
-            //     .style('fill', '#f80')
-            //     .style('fill-opacity', 1)
-
-            // taxParts.merge(taxPartsEnter)
-            //     .attr('x', 0)   // d => scaleTaxRate(d.taxRate))
-            //     .attr('width', d => scaleTaxRate(d.taxRate))
-            //     .transition().duration(transitionDuration)
-            //     .attr('height', d => {
-            //         if (netIncome > d.minNetIncome) {
-            //             if (netIncome < d.maxNetIncome)
-            //             return scaleIncome(netIncome - d.minNetIncome)
-            //             else
-            //             return scaleIncome(d.maxNetIncome - d.minNetIncome);
-            //         } else {
-            //             return 0;
-            //         }
-            //     })
-            //     .attr('y', d => scaleIncome(d.minNetIncome))
-
-            // console.log(isPullTax);
-            // svg.select('g.tax-parts')
-            //     .transition(transitionDuration)
-            //     .attr('transform', isPullTax ? `translate(${-50}, 0)` : 'translate(0, 0)')
-            //     .style('opacity', isPullTax ? 0 : 1);
-
-
-            // const taxCamouflageParts = svg.select('g.tax-camouflage')
-            //     .selectAll('rect')
-            //     .data(taxBrackets)
-
-            // const taxCamouflagePartsEnter = taxCamouflageParts
-            //     .enter()
-            //     .append('rect')
-            //     .style('fill', '#222')
-            //     .style('stroke', '#222')
-            //     .style('fill-opacity', 1)
-
-            // taxCamouflageParts.merge(taxCamouflagePartsEnter)
-            //     .attr('x', 0)   // d => scaleTaxRate(d.taxRate))
-            //     .attr('width', d => scaleTaxRate(d.taxRate))
-            //     .transition().duration(transitionDuration)
-            //     .attr('height', d => {
-            //         if (netIncome > d.minNetIncome) {
-            //             if (netIncome < d.maxNetIncome)
-            //                 return scaleIncome(netIncome - d.minNetIncome)
-            //             else
-            //                 return scaleIncome(d.maxNetIncome - d.minNetIncome);
-            //         } else {
-            //             return 0;
-            //         }
-            //     })
-            //     .attr('y', d => scaleIncome(d.minNetIncome))
-
-
             // AXES
 
             d3.select("g.axis-income-bottom")
@@ -331,51 +257,10 @@ export const D3Component = ({
                 .transition().duration(transitionDuration)
                 .call(axisIncomeLeft);
 
-            // d3.select("g.axis-income-top")
-            //     .attr("transform", `translate(0, -10)`)
-            //     .transition().duration(transitionDuration)
-            //     .call(axisIncomeTop);
-
             d3.select("g.axis-tax-rate")
                 // .attr("transform", `translate(-10, 0)`)
                 .transition().duration(transitionDuration)
                 .call(axisTaxRate);
-
-            // var squareDim = 10; // pixel dimensions of square
-            // var boxesPerRow = 15;
-
-            // const boxesGroups = svg
-            //     .selectAll('g.box')
-            //     .data(d3Data, (d, i) => i)
-
-            // const boxesGroupsEnter = boxesGroups
-            //     .enter()
-            //     .append('g')
-            //     .classed('box', true)
-            //     .attr('id', (d, i) => `box-${i}`)
-            //     .attr('transform', (d, i) => {
-            //         let x = Math.floor(i / boxesPerRow) * (squareDim + 2);
-            //         let y = Math.floor(i % boxesPerRow) * (squareDim + 2);
-            //         return `translate(${x}, ${y})`;
-            //     });
-
-            // boxesGroupsEnter
-            //     .append('rect')
-            //     .classed('box-rect', true)
-            //     .style('fill', '#c62828')
-
-            // boxesGroups.merge(boxesGroupsEnter)
-            //     .attr('data-box-amount', d => d)
-
-            // boxesGroups.merge(boxesGroupsEnter)
-            //     .select('rect.box-rect')
-            //     .attr('data-box-amount', d => d)
-            //     .attr('width', squareDim)
-            //     .attr('height', d => squareDim * (d / amountPerBox))
-
-            // console.log(d3Data)
-            // boxesGroups.exit().remove();
-            // boxGroups.exit().remove();
         }
     }, [
         width, height,
@@ -406,7 +291,6 @@ export const D3Component = ({
                 width={width}
                 height={height}
                 ref={d3Container}
-            // viewBox={`0 0 ${width} ${height}`}
             >
                 <defs>
                     <clipPath id="net-income-mask">
@@ -428,13 +312,11 @@ export const D3Component = ({
                             fill: '#fff', fontSize: '0.75rem', alignmentBaseline: 'middle', textAnchor: 'middle', fillOpacity: 0.4
                         }} />
                         <g className="tax-lines" />
-                        {/* <g className="tax-camouflage" clip-path="url(#cut-off-bottom)" /> */}
                         <g className="axis-income-top" />
                         <g className="axis-income-bottom" />
                         <g className="axis-tax-rate" />
-                        {/* <g className="tax-parts" clip-path="url(#cut-off-bottom)" /> */}
-                        <path className="tax-stairs-camouflage" clip-path="url(#net-income-mask)" />
-                        <path className="tax-stairs" clip-path="url(#net-income-mask)" />
+                        <path className="tax-stairs-camouflage" clip-path="url(#net-income-mask)" onClick={() => setPullTax(false)} />
+                        <path className="tax-stairs" clip-path="url(#net-income-mask)" onClick={() => setPullTax(!isPullTax)} />
                     </g>
                 </g>
             </CartesianSvg>
