@@ -210,7 +210,7 @@ function NetIncomeEquation({ income, expense, allowance, highlight = {} }) {
           {numberWithCommas(income)}
         </small>
       </div>
-      <div>-</div>
+      <div>−</div>
       <div style={{ flexGrow: 1, textAlign: "center" }}>
         <small style={{ color: highlight.expense ? "#9c86eb" : "#888" }}>
           ค่าใช้จ่าย
@@ -225,7 +225,7 @@ function NetIncomeEquation({ income, expense, allowance, highlight = {} }) {
           {numberWithCommas(expense)}
         </small>
       </div>
-      <div>-</div>
+      <div>−</div>
       <div style={{ flexGrow: 1, textAlign: "center" }}>
         <small style={{ color: highlight.allowance ? "#58cc92" : "#888" }}>
           ลดหย่อน
@@ -335,15 +335,15 @@ function App() {
         </div>
         <div>=</div>
         <div style={{ flexGrow: 1, textAlign: "center" }}>
-          <span style={{ color: "#888" }}>รายได้</span>
+          <span>รายได้</span>
         </div>
-        <div>-</div>
+        <div>−</div>
         <div style={{ flexGrow: 1, textAlign: "center" }}>
-          <span style={{ color: "#888" }}>ค่าใช้จ่าย</span>
+          <span>ค่าใช้จ่าย</span>
         </div>
-        <div>-</div>
+        <div>−</div>
         <div style={{ flexGrow: 1, textAlign: "center" }}>
-          <span style={{ color: "#888" }}>ลดหย่อน</span>
+          <span>ค่าลดหย่อน</span>
         </div>
 
         {/* <div style={{ flexGrow: 1, flexBasis: 0, textAlign: "center" }}>
