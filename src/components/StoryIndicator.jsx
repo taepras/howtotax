@@ -13,7 +13,7 @@ const StoryIndicatorItem = styled.div`
     border-radius: 999;
     background-color: #fff;
     transition: opacity 0.2s;
-    opacity: ${props => props.active ? 1 : 0.4};
+    opacity: ${props => props.active ? 1 : 0.2};
 `
 
 const StoryIndicator = ({ currentStep = 0, totalSteps = 0, ...props }) => {

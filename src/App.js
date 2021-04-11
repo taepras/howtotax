@@ -114,6 +114,7 @@ const ContentContainer = styled.div`
 
 const PageContainer = styled.div`
   padding: 30px;
+  padding-top: 15px;
   position: absolute;
   top: 0;
   left: 0;
