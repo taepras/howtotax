@@ -50,7 +50,7 @@ export const D3Component = ({
     setPullTax = (x) => {},
     transitionTime = 500,
     enableTransition = true,
-    isBlink
+    isBlink = {}
 }) => {
     const { observe, unobserve, width, height, entry } = useDimensions({
         onResize: ({ observe, unobserve, width, height, entry }) => {
@@ -115,6 +115,7 @@ export const D3Component = ({
 
             svg.select('rect.net-income')
                 .attr('width', barWidth)
+                .style('animation', isBlink.income ? 'blink-soft 1s infinite' : 'none')
                 .transition().duration(transitionDuration)
                 .style('fill', '#08f')
                 .attr('height', Math.max(0, scaleIncome(netIncome)));
@@ -128,6 +129,7 @@ export const D3Component = ({
             console.log('netIncome + cleanedAllowance', netIncome + cleanedAllowance, cleanedAllowance, scaleIncome(cleanedAllowance))
             svg.select('rect.expense')
                 .attr('width', barWidth)
+                .style('animation', isBlink.expense ? 'blink-soft 1s infinite' : 'none')
                 .transition().duration(transitionDuration)
                 .style('fill', '#312b46')
                 .attr('y', scaleIncome(netIncome + cleanedAllowance))
@@ -138,6 +140,7 @@ export const D3Component = ({
                 .attr('data-allowance', allowance)
                 .attr('data-callowance', cleanedAllowance)
                 .attr('data-sallowance', scaleIncome(cleanedAllowance))
+                .style('animation', isBlink.allowance ? 'blink-soft 1s infinite' : 'none')
                 .transition().duration(transitionDuration)
                 .style('fill', '#2a4236')
                 .attr('y', scaleIncome(netIncome))
@@ -172,7 +175,7 @@ export const D3Component = ({
 
             svg.select('path.tax-stairs')
                 .attr('fill', '#f80')
-                .style('animation', isActivateTax && isBlink ? 'blink 1s infinite' : 'none')
+                .style('animation', isActivateTax && isBlink.tax ? 'blink 1s infinite' : 'none')
                 .transition().duration(transitionDuration)
                 .attr('d', generateTaxBracketsPathD)
                 .attr('transform', isPullTax ? `translate(${-50}, 0)` : 'translate(0, 0)')
