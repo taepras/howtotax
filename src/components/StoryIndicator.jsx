@@ -5,6 +5,16 @@ import * as d3 from 'd3'
 const StoryIndicatorContainer = styled.div`
     display: flex;
     gap: 4px;
+    position: absolute;
+    top: 15px;
+    left: 30px;
+    right: 30px;
+    z-index: 100;
+
+    @media (min-width: 480px) {
+        width: 500px;
+        margin: auto;
+    }
 `
 
 const StoryIndicatorItem = styled.div`
