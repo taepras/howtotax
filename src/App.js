@@ -255,7 +255,9 @@ function App() {
           value={income}
           onChange={(e) => setIncome(e.target.value)}
           onMouseDown={() => setEnableTransition(false)}
+          onTouchDown={() => setEnableTransition(false)}
           onMouseUp={() => setEnableTransition(true)}
+          onTouchUp={() => setEnableTransition(false)}
         />
       </ControlsContainer>
     </>,
@@ -280,6 +282,10 @@ function App() {
           max="100000"
           value={expense}
           onChange={(e) => setExpense(e.target.value)}
+          onMouseDown={() => setEnableTransition(false)}
+          onTouchDown={() => setEnableTransition(false)}
+          onMouseUp={() => setEnableTransition(true)}
+          onTouchUp={() => setEnableTransition(false)}
         />
       </ControlsContainer>
     </>,
@@ -304,6 +310,10 @@ function App() {
           max="1000000"
           value={allowance}
           onChange={(e) => setAllowance(e.target.value)}
+          onMouseDown={() => setEnableTransition(false)}
+          onTouchDown={() => setEnableTransition(false)}
+          onMouseUp={() => setEnableTransition(true)}
+          onTouchUp={() => setEnableTransition(false)}
         />
       </ControlsContainer>
     </>,
@@ -352,7 +362,7 @@ function App() {
         เพื่อคำนวณภาษีออกมา
       </p>
 
-      <p>สีส้มคือสัดส่วนภาษีที่คุณต้องเสีย</p>
+      <p>ส่วนสีส้มคือสัดส่วนภาษีที่คุณจะต้องเสีย</p>
       <div style={{ display: "flex", alignItems: "center" }}>
         <div style={{ flexGrow: 1, flexBasis: 0, textAlign: "center" }}>
           <small style={{ color: "#aaa" }}>รายได้</small>
@@ -380,7 +390,7 @@ function App() {
       if (expense == 0) setExpense(100_000);
     }
 
-    if (currentNarrativeStep == 1) {
+    if (currentNarrativeStep == 2) {
       if (allowance == 0) setAllowance(60_000);
     }
 
