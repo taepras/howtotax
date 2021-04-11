@@ -386,6 +386,10 @@ function App() {
   ];
 
   useEffect(() => {
+    if (currentNarrativeStep == 0) {
+      if (income == 0) setIncome(360_000);
+    }
+
     if (currentNarrativeStep == 1) {
       if (expense == 0) setExpense(100_000);
     }
