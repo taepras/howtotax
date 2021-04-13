@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { useResizeDetector } from 'react-resize-detector';
 import { transition } from 'd3';
 import { useNetIncome } from '../utils/TaxCalculation';
+import ScaleReference from './ScaleReference';
 
 
 const SvgContainer = styled.div`
@@ -47,7 +48,7 @@ export const D3Component = ({
     isPullTax = false,
     showBrackets = true,
     isActivateTax = true,
-    setPullTax = (x) => {},
+    setPullTax = (x) => { },
     transitionTime = 500,
     enableTransition = true,
     isBlink = {}
@@ -280,7 +281,7 @@ export const D3Component = ({
 
     return (<>
         <SvgContainer ref={observe}>
-            <Fade />
+            {/* <Fade /> */}
             <CartesianSvg
                 id="chart"
                 className="d3-component"
@@ -292,7 +293,12 @@ export const D3Component = ({
                     <clipPath id="net-income-mask">
                         <rect className="net-income-mask" />
                     </clipPath>
+                    <linearGradient id="fade-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style={{ stopColor: '#222', stopOpacity: 1 }} />
+                        <stop offset="100%" style={{ stopColor: '222', stopOpacity: 0 }} />
+                    </linearGradient>
                 </defs>
+                    
                 <g transform={`translate(0, ${height}) scale(1, -1)`}>
                     <g className="container">
                         <rect className="net-income" />
@@ -315,6 +321,8 @@ export const D3Component = ({
                         <path className="tax-stairs" clipPath="url(#net-income-mask)" onClick={() => setPullTax(!isPullTax)} />
                     </g>
                 </g>
+                <rect className="fade" fill="url(#fade-grad)" width={width} height={50} />
+                <ScaleReference scale={scaleIncome} barWidth={barWidth} x={width} y={40 / 2} maxSize={40} />
             </CartesianSvg>
         </SvgContainer>
     </>);
