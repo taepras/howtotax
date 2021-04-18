@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { theme } from '../theme';
+import { transparentize } from 'polished';
 
 const FadeTop = styled.div`
     position: absolute;
@@ -8,8 +9,9 @@ const FadeTop = styled.div`
     left: -2px;
     right: -2px;
     height: 50px;
-    background: linear-gradient(to bottom, ${theme.colors.bg}f, ${theme.colors.bg}0);
+    background: linear-gradient(to bottom, ${theme.colors.bg}, ${transparentize(1, theme.colors.bg)});
     pointer-events: none;
+    z-index: 1;
 
     transition: all 0.2s;
     opacity: ${props => props.active ? 1 : 0};
@@ -21,8 +23,9 @@ const FadeBottom = styled.div`
     left: -2px;
     right: -2px;
     height: 50px;
-    background: linear-gradient(to top, ${theme.colors.bg}f, ${theme.colors.bg}0);
+    background: linear-gradient(to top, ${theme.colors.bg}, ${transparentize(1, theme.colors.bg)});
     pointer-events: none;
+    z-index: 1;
 
     transition: all 0.2s;
     opacity: ${props => props.active ? 1 : 0};
@@ -46,12 +49,12 @@ const StyledScrollBox = styled.div`
     overflow-x: hidden;
 `
 
-const ScrollBox = ({ children, ...props }) => {
+const ScrollBox = ({ children, onScroll, ...props }) => {
     const scrollBoxRef = useRef(null);
     const [showTopFade, setShowTopFade] = useState(true);
     const [showBottomFade, setShowBottomFade] = useState(true);
 
-    const onScroll = useCallback(() => {
+    const handleScroll = useCallback((e) => {
         if (scrollBoxRef.current) {
             setShowTopFade(scrollBoxRef.current.scrollTop > 0);
             setShowBottomFade(scrollBoxRef.current.offsetHeight + scrollBoxRef.current.scrollTop < scrollBoxRef.current.scrollHeight);
@@ -60,16 +63,19 @@ const ScrollBox = ({ children, ...props }) => {
 
     useEffect(() => {
         if (scrollBoxRef.current) {
-            console.log('registering onscroll', onScroll);
-            scrollBoxRef.current.addEventListener('scroll', onScroll);
+            console.log('registering handleScroll', handleScroll);
+            scrollBoxRef.current.addEventListener('scroll', (e) => {
+                onScroll(e);
+                handleScroll(e);
+            });
             return () => {
                 if (scrollBoxRef.current)
-                    scrollBoxRef.current.removeEventListener('scroll', onScroll);
+                    scrollBoxRef.current.removeEventListener('scroll', handleScroll);
             }
         }
-    }, [scrollBoxRef, onScroll])
+    }, [scrollBoxRef, handleScroll])
 
-    useEffect(onScroll, [scrollBoxRef]);
+    useEffect(handleScroll, [scrollBoxRef]);
 
     return (
         <>
