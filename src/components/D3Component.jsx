@@ -8,6 +8,7 @@ import { transition } from 'd3';
 import { useNetIncome } from '../utils/TaxCalculation';
 import ScaleReference from './ScaleReference';
 
+import { taxBrackets } from '../data/TaxBrackets';
 
 const SvgContainer = styled.div`
     position: absolute;
@@ -38,7 +39,7 @@ export const D3Component = ({
     income,
     expense,
     allowance,
-    taxBrackets,
+    // taxBrackets,
     padding = {
         left: 35,
         right: 0,
@@ -295,7 +296,7 @@ export const D3Component = ({
                     </clipPath>
                     <linearGradient id="fade-grad" x1="0%" y1="0%" x2="0%" y2="100%">
                         <stop offset="0%" style={{ stopColor: '#222', stopOpacity: 1 }} />
-                        <stop offset="100%" style={{ stopColor: '222', stopOpacity: 0 }} />
+                        <stop offset="100%" style={{ stopColor: '#222', stopOpacity: 0 }} />
                     </linearGradient>
                 </defs>
                     
