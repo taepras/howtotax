@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import { theme } from '../theme';
 
 const FadeTop = styled.div`
     position: absolute;
@@ -7,7 +8,7 @@ const FadeTop = styled.div`
     left: -2px;
     right: -2px;
     height: 50px;
-    background: linear-gradient(to bottom, #222f, #2220);
+    background: linear-gradient(to bottom, ${theme.colors.bg}f, ${theme.colors.bg}0);
     pointer-events: none;
 
     transition: all 0.2s;
@@ -20,7 +21,7 @@ const FadeBottom = styled.div`
     left: -2px;
     right: -2px;
     height: 50px;
-    background: linear-gradient(to top, #222f, #2220);
+    background: linear-gradient(to top, ${theme.colors.bg}f, ${theme.colors.bg}0);
     pointer-events: none;
 
     transition: all 0.2s;
@@ -39,10 +40,10 @@ const ScrollBoxContainer = styled.div`
 `
 
 const StyledScrollBox = styled.div`
-  position: relative;
-  flex-grow: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
+    position: relative;
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
 `
 
 const ScrollBox = ({ children, ...props }) => {
@@ -72,7 +73,7 @@ const ScrollBox = ({ children, ...props }) => {
 
     return (
         <>
-            <StyledScrollBox ref={scrollBoxRef}>
+            <StyledScrollBox ref={scrollBoxRef} {...props}>
                 {children}
             </StyledScrollBox>
             <FadeTop active={showTopFade} />
