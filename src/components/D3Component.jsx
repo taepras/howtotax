@@ -198,7 +198,7 @@ export const D3Component = ({
                         <g className="axis axis-tax-rate" />
                     </g>
                 </g>
-                <rect className="fade" fill="url(#fade-grad)" width={width} height={50} />
+                <rect className="fade" fill="url(#fade-grad)" width={width} height={(height - padding.bottom) * 0.25} />
                 <ScaleReference scale={scaleIncome} barWidth={barWidth} x={width} y={40 / 2} maxSize={40} />
             </CartesianSvg>
         </SvgContainer>
