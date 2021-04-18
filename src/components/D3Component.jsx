@@ -9,6 +9,9 @@ import { useNetIncome } from '../utils/TaxCalculation';
 import ScaleReference from './ScaleReference';
 
 import { taxBrackets } from '../data/TaxBrackets';
+import { MoneyBlock } from './MoneyBlock';
+import { TaxBracketDisplay } from './TaxBracketDisplay';
+import { theme } from '../theme';
 
 const SvgContainer = styled.div`
     position: absolute;
@@ -16,15 +19,6 @@ const SvgContainer = styled.div`
     left: 0;
     right: 0;
     bottom: 0;
-`
-
-const Fade = styled.div`
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 20%;
-    background: linear-gradient(to bottom, #222, #2220);
 `
 
 const CartesianSvg = styled.svg`
@@ -36,6 +30,12 @@ const CartesianSvg = styled.svg`
 // const transitionDuration = 1000
 
 export const D3Component = ({
+    incomeGroups,
+    // incomeGroupLabels,
+    // expenseGroups,
+    isGroupIncome,
+    showBreakdown,
+
     income,
     expense,
     allowance,
@@ -86,26 +86,11 @@ export const D3Component = ({
             .range([0, barWidth])
         , [income, width])
 
-    const axisIncomeLeft = useMemo(() => d3.axisLeft(scaleIncome)
+    const axisIncome = useMemo(() => d3.axisLeft(scaleIncome)
         .tickFormat(d3.format(".3s"))
         , [scaleIncome]);
-    const axisIncomeRight = useMemo(() => d3.axisRight(scaleIncome), [scaleIncome]);
     const axisTaxRate = useMemo(() => d3.axisBottom(scaleTaxRate).tickFormat(d3.format('.0%'))
-        , [scaleTaxRate]);
-
-    const numberWithCommas = (x) => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-
-    const generateTaxBracketsPathD = d => {
-        let pathD = 'M 0 0 ';
-        pathD += taxBrackets.map((d) => {
-            return ''
-                + `L ${scaleTaxRate(d.taxRate)} ${scaleIncome(d.minNetIncome)} `
-                + `L ${scaleTaxRate(d.taxRate)} ${scaleIncome(d.maxNetIncome)} `
-        }).join('')
-        pathD += `L 0 ${scaleIncome(taxBrackets[taxBrackets.length - 1].maxNetIncome)} `
-        pathD += `Z`
-        return pathD;
-    }
+        , [scaleTaxRate]);    
 
     useLayoutEffect(() => {
         if (d3Container.current) {
@@ -115,145 +100,20 @@ export const D3Component = ({
             svg.select('g.container')
                 .attr('transform', `translate(${padding.left}, ${padding.bottom})`);
 
-            svg.select('rect.net-income')
-                .attr('width', barWidth)
-                .style('animation', isBlink.income ? 'blink-soft 1s infinite' : 'none')
+            svg.select('g.overview')
                 .transition().duration(transitionDuration)
-                .style('fill', '#08f')
-                .attr('height', Math.max(0, scaleIncome(netIncome)));
+                .attr('opacity', showBreakdown ? 0 : 1)
 
-            svg.select('rect.net-income-mask')
-                .attr('width', barWidth)
+            svg.select('g.breakdown')
                 .transition().duration(transitionDuration)
-                // .style('fill', '#08f')
-                .attr('height', Math.max(0, scaleIncome(netIncome)));
-
-            console.log('netIncome + cleanedAllowance', netIncome + cleanedAllowance, cleanedAllowance, scaleIncome(cleanedAllowance))
-            svg.select('rect.expense')
-                .attr('width', barWidth)
-                .style('animation', isBlink.expense ? 'blink-soft 1s infinite' : 'none')
-                .transition().duration(transitionDuration)
-                .style('fill', '#312b46')
-                .attr('y', scaleIncome(netIncome + cleanedAllowance))
-                .attr('height', Math.max(0, scaleIncome(cleanedExpense)));
-
-            svg.select('rect.allowance')
-                .attr('width', barWidth)
-                .attr('data-allowance', allowance)
-                .attr('data-callowance', cleanedAllowance)
-                .attr('data-sallowance', scaleIncome(cleanedAllowance))
-                .style('animation', isBlink.allowance ? 'blink-soft 1s infinite' : 'none')
-                .transition().duration(transitionDuration)
-                .style('fill', '#2a4236')
-                .attr('y', scaleIncome(netIncome))
-                .attr('height', Math.max(0, scaleIncome(cleanedAllowance)));
-
-            svg.select('text.net-income-text')
-                .text(`เงินได้สุทธิ`)// ${numberWithCommas(netIncome)} บาท`)
-                .transition().duration(transitionDuration)
-                .attr('x', barWidth / 2)
-                .attr('y', -scaleIncome(netIncome / 2))
-                .attr('opacity', netIncome > 0 ? 1 : 0)
-
-            svg.select('text.net-expense-text')
-                .text(`ค่าลดหย่อน`)// ${numberWithCommas(allowance)} บาท`)
-                .transition().duration(transitionDuration)
-                .attr('x', barWidth / 2)
-                .attr('y', -scaleIncome(netIncome + cleanedAllowance / 2))
-                .attr('opacity', cleanedAllowance > 0 ? 1 : 0)
-
-            svg.select('text.net-allowance-text')
-                .text(`ค่าใช้จ่าย`)// ${numberWithCommas(expense)} บาท`)
-                .transition().duration(transitionDuration)
-                .attr('x', barWidth / 2)
-                .attr('y', -scaleIncome(income - expense / 2))
-                .attr('opacity', cleanedExpense > 0 ? 1 : 0)
-
-            svg.select('path.tax-stairs-camouflage')
-                .attr('fill', '#222')
-                .transition().duration(transitionDuration)
-                .attr('opacity', isActivateTax ? 1 : 0)
-                .attr('d', generateTaxBracketsPathD)
-
-            svg.select('path.tax-stairs')
-                .attr('fill', '#f80')
-                .style('animation', isActivateTax && isBlink.tax ? 'blink 1s infinite' : 'none')
-                .transition().duration(transitionDuration)
-                .attr('d', generateTaxBracketsPathD)
-                .attr('transform', isPullTax ? `translate(${-50}, 0)` : 'translate(0, 0)')
-                .style('opacity', isActivateTax && !isPullTax ? 1 : 0)
-
-            const bracketLineGroups = svg.select('g.tax-lines')
-                .selectAll('g')
-                .data(taxBrackets)
-
-            const bracketLineGroupsEnter = bracketLineGroups
-                .enter()
-                .append('g')
-                .classed('bracket', true)
-
-            bracketLineGroupsEnter.append('text').classed('bracket-rate-text', true)
-            bracketLineGroupsEnter.append('text').classed('bracket-min-text', true)
-            bracketLineGroupsEnter.append('rect').classed('bracket-rect', true)
-            bracketLineGroupsEnter.append('line').classed('bracket-line', true)
-
-            bracketLineGroups.merge(bracketLineGroupsEnter)
-                .select('rect')
-                .attr('x', 0)   // d => scaleTaxRate(d.taxRate))
-                .attr('width', d => scaleTaxRate(d.taxRate))
-                .style('fill-opacity', 0)
-                .style('stroke', '#f80')
-                .style("stroke-dasharray", "3, 3")
-                .transition().duration(transitionDuration)
-                .attr('y', d => scaleIncome(d.minNetIncome))
-                .attr('height', d => scaleIncome(d.maxNetIncome - d.minNetIncome))
-                .attr('opacity', showBrackets ? 1 : 0)
-
-
-            bracketLineGroups.merge(bracketLineGroupsEnter)
-                .select('line')
-                .attr('x1', 0)
-                .attr('x2', barWidth)
-                .style('stroke', '#f80')
-                .style("stroke-dasharray", "3, 3")
-                .transition().duration(transitionDuration)
-                // .style('stroke-opacity', '0.4')
-                .attr('y1', d => scaleIncome(d.maxNetIncome))
-                .attr('y2', d => scaleIncome(d.maxNetIncome))
-                .attr('opacity', showBrackets ? 1 : 0)
-
-            bracketLineGroups.merge(bracketLineGroupsEnter)
-                .select('text.bracket-rate-text')
-                .style('fill', '#fff')
-                .style('font-size', '0.75rem')
-                .style('text-anchor', 'end')
-                .attr('x', barWidth - 5)
-                .transition().duration(transitionDuration)
-                .text(d => `เริ่มคิดที่ ${numberWithCommas(d.minNetIncome)} บาท`)
-                .style('fill-opacity', (d, i) => i != 0 && scaleIncome(d.maxNetIncome - d.minNetIncome) > 20 ? 1 : 0)
-                .attr('y', d => -scaleIncome(d.minNetIncome) - 5)
-                .attr('opacity', showBrackets ? 1 : 0)
-
-            bracketLineGroups.merge(bracketLineGroupsEnter)
-                .select('text.bracket-min-text')
-                .style('fill', '#fff')
-                .style('font-size', '0.75rem')
-                .attr('x', d => scaleTaxRate(d.taxRate) + 5)
-                .transition().duration(transitionDuration)
-                .text(d => `ภาษี ${d.taxRate * 100}%`)
-                // .text(d => scaleIncome(d.maxNetIncome - d.minNetIncome) > 150
-                //     ? `เริ่มคิดที่ ${numberWithCommas(d.minNetIncome)} บาท`
-                //     : `${d.taxRate * 100}%`)
-                .style('fill-opacity', (d, i) => i != 0 && scaleIncome(d.maxNetIncome - d.minNetIncome) > 20 ? 1 : 0)
-                .attr('y', d => -scaleIncome(d.minNetIncome) - 5)
-                .attr('opacity', showBrackets ? 1 : 0)
+                .attr('opacity', showBreakdown ? 1 : 0)
 
             // AXES
 
-            d3.select("g.axis-income-bottom")
+            d3.select("g.axis-income")
                 .attr("transform", `translate(0, 0)`)
                 .transition().duration(transitionDuration)
-                .call(axisIncomeLeft);
+                .call(axisIncome);
 
             d3.select("g.axis-tax-rate")
                 // .attr("transform", `translate(-10, 0)`)
@@ -261,24 +121,15 @@ export const D3Component = ({
                 .call(axisTaxRate);
         }
     }, [
-        width, height,
         d3Container,
-        isPullTax,
-        barWidth,
-        scaleIncome,
-        netIncome,
-        income,
-        expense,
-        allowance,
-        taxBrackets,
         padding,
-        axisIncomeLeft,
-        axisIncomeRight,
+        axisIncome,
         axisTaxRate,
-        cleanedAllowance,
-        cleanedExpense,
-        scaleTaxRate
+        showBreakdown,
+        transitionDuration,
     ]);
+
+    const sum = x => x.reduce((a, b) => a + b, 0);
 
     return (<>
         <SvgContainer ref={observe}>
@@ -291,35 +142,60 @@ export const D3Component = ({
                 ref={d3Container}
             >
                 <defs>
-                    <clipPath id="net-income-mask">
-                        <rect className="net-income-mask" />
-                    </clipPath>
                     <linearGradient id="fade-grad" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" style={{ stopColor: '#222', stopOpacity: 1 }} />
-                        <stop offset="100%" style={{ stopColor: '#222', stopOpacity: 0 }} />
+                        <stop offset="0%" style={{ stopColor: theme.colors.bg, stopOpacity: 1 }} />
+                        <stop offset="100%" style={{ stopColor: theme.colors.bg, stopOpacity: 0 }} />
                     </linearGradient>
                 </defs>
-                    
+
                 <g transform={`translate(0, ${height}) scale(1, -1)`}>
                     <g className="container">
-                        <rect className="net-income" />
-                        <rect className="expense" />
-                        <rect className="allowance" />
-                        <text className="net-income-text" style={{
-                            fill: '#fff', fontSize: '0.75rem', alignmentBaseline: 'middle', textAnchor: 'middle', fillOpacity: 0.4
-                        }} />
-                        <text className="net-expense-text" style={{
-                            fill: '#fff', fontSize: '0.75rem', alignmentBaseline: 'middle', textAnchor: 'middle', fillOpacity: 0.4
-                        }} />
-                        <text className="net-allowance-text" style={{
-                            fill: '#fff', fontSize: '0.75rem', alignmentBaseline: 'middle', textAnchor: 'middle', fillOpacity: 0.4
-                        }} />
-                        <g className="tax-lines" />
-                        <g className="axis axis-income-top" />
-                        <g className="axis axis-income-bottom" />
+                        <g className="overview">
+                            <MoneyBlock amount={netIncome} scale={scaleIncome} offset={0} barWidth={barWidth} fill={theme.colors.income} label='เงินได้สุทธิ' stroke={false} enableTransition={enableTransition} isBlink={isBlink.income}/>
+                            <MoneyBlock amount={cleanedExpense} scale={scaleIncome} offset={netIncome + cleanedAllowance} barWidth={barWidth} fill={theme.colors.expense} label='ค่าใช้จ่าย' stroke={false} enableTransition={enableTransition}/>
+                            <MoneyBlock amount={cleanedAllowance} scale={scaleIncome} offset={netIncome} barWidth={barWidth} fill={theme.colors.allowance} label='ค่าลดหย่อน' stroke={false} enableTransition={enableTransition}/>
+                        </g>
+                        <g className="breakdown">
+                            {incomeGroups.map((ig, i) => <>
+                                <MoneyBlock
+                                    amount={ig.income - ig.expense}
+                                    scale={scaleIncome}
+                                    offset={
+                                        isGroupIncome
+                                            ? sum(incomeGroups.slice(0, i).map(x => x.income - x.expense))
+                                            : sum(incomeGroups.slice(0, i).map(x => x.income))
+                                    }
+                                    barWidth={barWidth}
+                                    fill={theme.colors.income}
+                                    label={ig.label}
+                                    stroke={true} />
+                                <MoneyBlock
+                                    amount={ig.expense}
+                                    scale={scaleIncome}
+                                    offset={
+                                        isGroupIncome
+                                            ? sum(incomeGroups.map(x => x.income - x.expense)) + sum(incomeGroups.slice(0, i).map(x => x.expense))
+                                            : sum(incomeGroups.slice(0, i).map(x => x.income)) + (ig.income - +ig.expense)
+                                    }
+                                    barWidth={barWidth}
+                                    fill={theme.colors.expense}
+                                    label={'ค่าใช้จ่าย คิดจาก' + ig.label}
+                                    stroke={true} />
+                            </>)}
+                        </g>
+
+                        <TaxBracketDisplay 
+                            barWidth={barWidth}
+                            scaleIncome={scaleIncome}
+                            scaleTaxRate={scaleTaxRate}
+                            showTax={isActivateTax}
+                            blinkTax={isBlink.tax}
+                            active={showBrackets}
+                            netIncome={netIncome}
+                        />
+
+                        <g className="axis axis-income" />
                         <g className="axis axis-tax-rate" />
-                        <path className="tax-stairs-camouflage" clipPath="url(#net-income-mask)" onClick={() => setPullTax(false)} />
-                        <path className="tax-stairs" clipPath="url(#net-income-mask)" onClick={() => setPullTax(!isPullTax)} />
                     </g>
                 </g>
                 <rect className="fade" fill="url(#fade-grad)" width={width} height={50} />

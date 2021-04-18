@@ -7,7 +7,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #222;
+  background-color: #1f1629;
   color: #fff;
   font-family: 'Bai Jamjuree', sans-serif;
 }
@@ -50,15 +50,15 @@ a:hover {
   fill: #888;
 }
 
-@keyframes blink {
-  0% { opacity: 0.2; }
+@keyframes blink-from-none {
+  0% { opacity: 0.5; }
   50% { opacity: 1; }
-  100% { opacity: 0.2; }
+  100% { opacity: 0.5; }
 } 
 
-@keyframes blink-soft {
+@keyframes blink-from-full {
   0% { opacity: 1; }
-  50% { opacity: 0.7; }
+  50% { opacity: 0.5; }
   100% { opacity: 1; }
 } 
 

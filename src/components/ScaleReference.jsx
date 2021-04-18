@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 import * as d3 from 'd3'
 import { numberWithCommas } from '../utils/display';
+import { theme } from '../theme';
 
 const ScaleReference = ({ scale, barWidth, x, y, maxSize = 30,...props }) => {
 
@@ -41,8 +42,8 @@ const ScaleReference = ({ scale, barWidth, x, y, maxSize = 30,...props }) => {
 
     return (
         <g transform={`translate(${x}, ${y}) scale(1, -1)`}>
-            <rect fill="#666" ref={squareRef} />
-            <text fill="#666" alignmentBaseline="middle" textAnchor="end" x={0} ref={textRef}>
+            <rect fill={theme.colors.textMuted} ref={squareRef} />
+            <text fill={theme.colors.textMuted} alignmentBaseline="middle" textAnchor="end" x={0} ref={textRef}>
                 {text}
             </text>
         </g>
