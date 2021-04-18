@@ -5,6 +5,9 @@ import "./App.css";
 import { numberWithCommas } from "./utils/display";
 import { useNetIncome, useTaxCalculation } from "./utils/TaxCalculation";
 import StoryIndicator from "./components/StoryIndicator";
+import ScrollBox from "./components/ScrollBox";
+
+import { taxBrackets } from './data/TaxBrackets';
 
 const ChartContainer = styled.div`
   /* padding: 30px; */
@@ -18,6 +21,7 @@ const ChartContainer = styled.div`
 
 const SideContainer = styled.div`
   height: 220px;
+  /* overflow-y: auto; */
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -195,7 +199,7 @@ const Button = styled.button`
 function NetIncomeEquation({ income, expense, allowance, highlight = {} }) {
   const netIncome = useNetIncome(income, expense, allowance);
   return (
-    <div style={{ display: "flex", alignItems: "center", marginTop: "10px" }}>
+    <div style={{ display: "flex", alignItems: "center", marginTop: "20px" }}>
       <div style={{ flexGrow: 1, textAlign: "center" }}>
         <small style={{ color: highlight.income ? "#0af" : "#888" }}>
           รายได้
@@ -207,10 +211,10 @@ function NetIncomeEquation({ income, expense, allowance, highlight = {} }) {
             color: highlight.income ? "#fff" : "#888",
           }}
         >
-          {numberWithCommas(income)}
+          {numberWithCommas(Math.round(income))}
         </small>
       </div>
-      <div>−</div>
+      <div style={{ color: "#888" }}>−</div>
       <div style={{ flexGrow: 1, textAlign: "center" }}>
         <small style={{ color: highlight.expense ? "#9c86eb" : "#888" }}>
           ค่าใช้จ่าย
@@ -222,10 +226,10 @@ function NetIncomeEquation({ income, expense, allowance, highlight = {} }) {
             color: highlight.expense ? "#fff" : "#888",
           }}
         >
-          {numberWithCommas(expense)}
+          {numberWithCommas(Math.round(expense))}
         </small>
       </div>
-      <div>−</div>
+      <div style={{ color: "#888" }}>−</div>
       <div style={{ flexGrow: 1, textAlign: "center" }}>
         <small style={{ color: highlight.allowance ? "#58cc92" : "#888" }}>
           ลดหย่อน
@@ -237,10 +241,10 @@ function NetIncomeEquation({ income, expense, allowance, highlight = {} }) {
             color: highlight.allowance ? "#fff" : "#888",
           }}
         >
-          {numberWithCommas(allowance)}
+          {numberWithCommas(Math.round(allowance))}
         </small>
       </div>
-      <div>=</div>
+      <div style={{ color: "#888" }}>=</div>
       <div style={{ flexGrow: 1, textAlign: "center" }}>
         <small style={{ color: highlight.netIncome ? "#0af" : "#888" }}>
           เงินได้สุทธิ
@@ -252,7 +256,7 @@ function NetIncomeEquation({ income, expense, allowance, highlight = {} }) {
             color: highlight.netIncome ? "#fff" : "#888",
           }}
         >
-          {numberWithCommas(netIncome)} ฿
+          {numberWithCommas(Math.round(netIncome))}
         </small>
       </div>
     </div>
@@ -260,13 +264,36 @@ function NetIncomeEquation({ income, expense, allowance, highlight = {} }) {
 }
 
 function App() {
-  const [salary, setSalary] = useState(0);
-  // const [income, setIncome] = useState(0);
-  const income = useMemo(() => salary * 12, [salary]);
-  // const [expense, setExpense] = useState(0);
-  const expense = useMemo(() => Math.min(income * 0.5, 100_000), [income]);
+  // income stated & computed numbers
+  const [salary, setSalary] = useState(360_000);
+  const [incomeFreelance, setIncomeFreelance] = useState(0);
+  const [incomeMerchant, setIncomeMerchant] = useState(0);
+  const [enableIncome, setEnableIncome] = useState(false);
+  const income = useMemo(
+    () => (enableIncome ? salary + +incomeFreelance + +incomeMerchant : 0),
+    [enableIncome, salary, incomeMerchant, incomeFreelance]
+  );
 
-  const [allowance, setAllowance] = useState(0);
+  // expense stated & computed numbers
+  const expense40_1_2 = useMemo(
+    () => Math.min((salary + +incomeFreelance) * 0.5, 100_000),
+    [salary, incomeFreelance]
+  );
+  const expense40_8 = useMemo(() => incomeMerchant * 0.6, [incomeMerchant]);
+  const [enableExpense, setEnableExpense] = useState(false);
+  const expense = useMemo(
+    () => (enableExpense ? +expense40_1_2 + +expense40_8 : 0),
+    [expense40_1_2, expense40_8, enableExpense]
+  );
+
+  // allowance stated & computed numbers
+  const [enableAllowance, setEnableAllowance] = useState(false);
+  const [allowance, setAllowance] = useState(60_000);
+  const displayAllowance = useMemo(() => (enableAllowance ? allowance : 0), [
+    allowance,
+    enableAllowance,
+  ]);
+
   const [enableTransition, setEnableTransition] = useState(true);
   const [currentNarrativeStep, setCurrentNarrativeStep] = useState(-1);
 
@@ -274,52 +301,7 @@ function App() {
   const [isActivateTax, setActivateTax] = useState(false);
   const [showBrackets, setShowBrackets] = useState(false);
 
-  const [enableExpense, setEnableExpense] = useState(0);
-
-  const taxBrackets = [
-    {
-      minNetIncome: 0,
-      maxNetIncome: 150000,
-      taxRate: 0,
-    },
-    {
-      minNetIncome: 150000,
-      maxNetIncome: 300000,
-      taxRate: 0.05,
-    },
-    {
-      minNetIncome: 300000,
-      maxNetIncome: 500000,
-      taxRate: 0.1,
-    },
-    {
-      minNetIncome: 500000,
-      maxNetIncome: 750000,
-      taxRate: 0.15,
-    },
-    {
-      minNetIncome: 750000,
-      maxNetIncome: 1000000,
-      taxRate: 0.2,
-    },
-    {
-      minNetIncome: 1000000,
-      maxNetIncome: 2000000,
-      taxRate: 0.25,
-    },
-    {
-      minNetIncome: 2000000,
-      maxNetIncome: 5000000,
-      taxRate: 0.3,
-    },
-    {
-      minNetIncome: 5000000,
-      maxNetIncome: 999999999999,
-      taxRate: 0.35,
-    },
-  ];
-
-  const netIncome = useNetIncome(income, expense, allowance);
+  const netIncome = useNetIncome(income, expense, displayAllowance);
   const taxFinal = useTaxCalculation(netIncome, taxBrackets);
 
   const narrativeSteps = [
@@ -349,7 +331,7 @@ function App() {
         {/* <div style={{ flexGrow: 1, flexBasis: 0, textAlign: "center" }}>
           <small>ภาษี</small>
           <br />
-          <b>{numberWithCommas(Math.ceil(taxFinal))} ฿</b>
+          <b>{numberWithCommas(Math.ceil(taxFinal))} </b>
         </div> */}
       </div>
     </>,
@@ -357,10 +339,10 @@ function App() {
     <>
       <ControlsContainer>
         <div style={{ display: "flex" }}>
-          <label style={{ flexGrow: 1 }}>เงินเดือน</label>
+          <label style={{ flexGrow: 1 }}>เงินเดือน (ทั้งปี รวมโบนัส)</label>
           <input
             type="number"
-            step={10000}
+            step={10_000}
             min={0}
             value={salary}
             onChange={(e) => setSalary(e.target.value)}
@@ -370,7 +352,7 @@ function App() {
         <input
           type="range"
           min="0"
-          max="1000000"
+          max="10000000"
           value={salary}
           onChange={(e) => setSalary(e.target.value)}
           onMouseDown={() => setEnableTransition(false)}
@@ -379,29 +361,158 @@ function App() {
           onTouchUp={() => setEnableTransition(false)}
         />
       </ControlsContainer>
-      <small style={{ marginLeft: "auto", color: "#888" }}>
+      {/* <small style={{ marginLeft: "auto", color: "#888" }}>
         เงินเดือน &times; 12 = {numberWithCommas(income)} บาท/ปี
-      </small>
+      </small> */}
       <NetIncomeEquation
         income={income}
         expense={expense}
-        allowance={allowance}
+        allowance={displayAllowance}
         highlight={{ income: true }}
       />
     </>,
 
     <>
       <p style={{ textAlign: "center" }}>
-        หักค่าใช้จ่ายได้ 50% ของรายได้
+        มีรายได้จากฟรีแลนซ์/ขายของด้วยหรือเปล่า?
+      </p>
+      <ControlsGrid>
+        <label style={{ flexGrow: 1 }}>
+          <small>
+            ฟรีแลนซ์ <span style={{ color: "#888" }}>/ ปี</span>
+          </small>
+        </label>
+        <input
+          type="range"
+          min="0"
+          max="1000000"
+          value={incomeFreelance}
+          onChange={(e) => setIncomeFreelance(e.target.value)}
+          onMouseDown={() => setEnableTransition(false)}
+          onTouchDown={() => setEnableTransition(false)}
+          onMouseUp={() => setEnableTransition(true)}
+          onTouchUp={() => setEnableTransition(false)}
+        />
+        <div>
+          <input
+            type="number"
+            step={10000}
+            min={0}
+            value={incomeFreelance}
+            onChange={(e) => setIncomeFreelance(e.target.value)}
+            style={{ width: "80px" }}
+          />
+        </div>
+
+        <label style={{ flexGrow: 1 }}>
+          <small>
+            ขายของ <span style={{ color: "#888" }}>/ ปี</span>
+          </small>
+        </label>
+        <input
+          type="range"
+          min="0"
+          max="1000000"
+          value={incomeMerchant}
+          onChange={(e) => setIncomeMerchant(e.target.value)}
+          onMouseDown={() => setEnableTransition(false)}
+          onTouchDown={() => setEnableTransition(false)}
+          onMouseUp={() => setEnableTransition(true)}
+          onTouchUp={() => setEnableTransition(false)}
+        />
+        <div>
+          <input
+            type="number"
+            step={10000}
+            min={0}
+            value={incomeMerchant}
+            onChange={(e) => setIncomeMerchant(e.target.value)}
+            style={{ width: "80px" }}
+          />
+        </div>
+      </ControlsGrid>
+      <NetIncomeEquation
+        income={income}
+        expense={expense}
+        allowance={displayAllowance}
+        highlight={{ income: true }}
+      />
+    </>,
+
+    <>
+      <p style={{ textAlign: "center" }}>
+        <span style={{ color: "#9c86eb" }}>ค่าใช้จ่าย</span>ที่หักได้ คิดจาก
+        <span style={{ color: "#0af" }}>รายได้</span>แต่ละประเภท
+      </p>
+      <p
+        style={{
+          display: "grid",
+          gridTemplateColumns: "auto auto",
+          columnGap: "10px",
+        }}
+      >
+        <span style={{ textAlign: "right" }}>เงินเดือน</span>
+        <span>นับเป็น "เงินได้ประเภทที่ 1"</span>
+        <span style={{ textAlign: "right" }}>เงินจากฟรีแลนซ์</span>
+        <span>นับเป็น "เงินได้ประเภทที่ 2"</span>
+        <span style={{ textAlign: "right" }}>เงินจากขายของ</span>
+        <span>นับเป็น "เงินได้ประเภทที่ 8"</span>
+      </p>
+      {/* <p style={{ textAlign: "center", color: "#888" }}>
+        *ตามประมวลรัษฎากร มาตรา 40
+      </p> */}
+    </>,
+
+    <>
+      <p style={{ textAlign: "center" }}>แล้วหักค่าใช้จ่ายได้เท่าไหร่?</p>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "auto auto",
+          columnGap: "10px",
+          rowGap: "10px",
+        }}
+      >
+        <span style={{ textAlign: "right" }}>
+          เงินเดือน {incomeFreelance > 0 && "+ ฟรีแลนซ์"}
+        </span>
+        <span>
+          หักได้ 50% ของรายได้
+          <br />
+          (ไม่เกิน 100,000 บาท)
+        </span>
+        {incomeMerchant > 0 && (
+          <>
+            <span style={{ textAlign: "right" }}>ขายของ</span>
+            <span>หักได้อย่างน้อย 60%</span>
+          </>
+        )}
+      </div>
+    </>,
+
+    <>
+      <p style={{ textAlign: "center" }}>
+        ดังนั้น คุณหักค่าใช้จ่ายได้รวม
         <br />
-        แต่ไม่เกิน 100,000 บาท
+        <b>{numberWithCommas(Math.round(expense))}</b> บาท
       </p>
       <NetIncomeEquation
         income={income}
         expense={expense}
-        allowance={allowance}
+        allowance={displayAllowance}
         highlight={{ expense: true }}
       />
+    </>,
+
+    <>
+      <p style={{ textAlign: "center" }}>
+        นอกจาก<span style={{ color: "#9c86eb" }}>ค่าใช้จ่าย</span>แล้ว ก็หัก
+        <span style={{ color: "#58cc92" }}>ค่าลดหย่อน</span>ได้อีก
+      </p>
+      <p style={{ textAlign: "center" }}>
+        ซึ่งค่าลดหย่อนมาจากสิ่งต่างๆ ที่เราทำ เช่น
+        <br /> ค่าเบี้ยประกันต่างๆ เงินบริจาค ฯลฯ
+      </p>
     </>,
 
     <>
@@ -436,20 +547,21 @@ function App() {
       <NetIncomeEquation
         income={income}
         expense={expense}
-        allowance={allowance}
+        allowance={displayAllowance}
         highlight={{ allowance: true }}
       />
     </>,
 
     <>
       <p style={{ textAlign: "center" }}>
-        "<span style={{ color: "#0af" }}>เงินได้สุทธิ</span>" ของคุณคือ{" "}
-        <b>{numberWithCommas(netIncome)}</b> บาท
+        ดังนั้น "<span style={{ color: "#0af" }}>เงินได้สุทธิ</span>" ของคุณคือ
+        <br />
+        <b>{numberWithCommas(Math.round(netIncome))}</b> บาท
       </p>
       <NetIncomeEquation
         income={income}
         expense={expense}
-        allowance={allowance}
+        allowance={displayAllowance}
         highlight={{ netIncome: true }}
       />
     </>,
@@ -481,24 +593,41 @@ function App() {
           <br />
           <span style={{ color: "#888" }}>{numberWithCommas(income)}</span>
         </div>
-        <div>→</div>
+        <div style={{ color: "#888" }}>→</div>
         <div style={{ flexGrow: 1, flexBasis: 0, textAlign: "center" }}>
           <small style={{ color: "#888" }}>เงินได้สุทธิ</small>
           <br />
           <span style={{ color: "#888" }}>{numberWithCommas(netIncome)}</span>
         </div>
-        <div>→</div>
+        <div style={{ color: "#888" }}>→</div>
         <div style={{ flexGrow: 1, flexBasis: 0, textAlign: "center" }}>
           <small style={{ color: "#f90" }}>ภาษี</small>
           <br />
-          <b>{numberWithCommas(Math.ceil(taxFinal))} ฿</b>
+          <b>{numberWithCommas(Math.ceil(taxFinal))} </b>
         </div>
       </div>
     </>,
 
-    <>
+    // <div
+    //   style={{
+    //     flexGrow: 1,
+    //     display: "flex",
+    //     flexDirection: "column",
+    //     // position: "absolute",
+    //     // top: 0,
+    //     // left: 0,
+    //     // right: 0,
+    //     // bottom: 0,
+    //     overflowY: 'auto',
+    //     overflowX: 'hidden',
+    //   }}
+    // >
+    <ScrollBox>
       <p style={{ marginBottom: "0.5rem" }}>
         <b>ลองปรับตัวเลขดู</b>
+      </p>
+      <p style={{ margin: "0 0 0.5rem", fontWeight: "bold", color: "#666" }}>
+        รายได้
       </p>
       <ControlsGrid>
         <label style={{ flexGrow: 1 }}>
@@ -525,6 +654,56 @@ function App() {
             style={{ width: "80px" }}
           />
         </div>
+
+        <label style={{ flexGrow: 1 }}>
+          <small>ฟรีแลนซ์</small>
+        </label>
+        <input
+          type="range"
+          min="0"
+          max="1000000"
+          value={incomeFreelance}
+          onChange={(e) => setIncomeFreelance(e.target.value)}
+          onMouseDown={() => setEnableTransition(false)}
+          onTouchDown={() => setEnableTransition(false)}
+          onMouseUp={() => setEnableTransition(true)}
+          onTouchUp={() => setEnableTransition(false)}
+        />
+        <div>
+          <input
+            type="number"
+            step={10000}
+            min={0}
+            value={incomeFreelance}
+            onChange={(e) => setIncomeFreelance(e.target.value)}
+            style={{ width: "80px" }}
+          />
+        </div>
+
+        <label style={{ flexGrow: 1 }}>
+          <small>ขายของ</small>
+        </label>
+        <input
+          type="range"
+          min="0"
+          max="1000000"
+          value={incomeMerchant}
+          onChange={(e) => setIncomeMerchant(e.target.value)}
+          onMouseDown={() => setEnableTransition(false)}
+          onTouchDown={() => setEnableTransition(false)}
+          onMouseUp={() => setEnableTransition(true)}
+          onTouchUp={() => setEnableTransition(false)}
+        />
+        <div>
+          <input
+            type="number"
+            step={10000}
+            min={0}
+            value={incomeMerchant}
+            onChange={(e) => setIncomeMerchant(e.target.value)}
+            style={{ width: "80px" }}
+          />
+        </div>
         {/* <small
           style={{
             display: "block",
@@ -537,12 +716,31 @@ function App() {
         >
           เงินเดือน &times; 12 = รายได้ <b>{numberWithCommas(income)}</b> บาท/ปี
         </small> */}
+      </ControlsGrid>
+      <p style={{ margin: "1rem 0 0.5rem", fontWeight: "bold", color: "#666" }}>
+        ค่าใช้จ่าย
+      </p>
+      <ControlsGrid>
         <label style={{ flexGrow: 1 }}>
-          <small>ค่าใช้จ่าย</small>
+          <small>คิดจากเงินเดือน + ฟรีแลนซ์</small>
         </label>
         <div style={{ gridColumn: "2 / -1" }}>
-          <small>หักได้ {numberWithCommas(expense)} บาท</small>
+          <small>
+            หักได้ {numberWithCommas(Math.round(expense40_1_2))} บาท
+          </small>
         </div>
+
+        <label style={{ flexGrow: 1 }}>
+          <small>คิดจากขายของ</small>
+        </label>
+        <div style={{ gridColumn: "2 / -1" }}>
+          <small>หักได้ {numberWithCommas(Math.round(expense40_8))} บาท</small>
+        </div>
+      </ControlsGrid>
+      <p style={{ margin: "1rem 0 0.5rem", fontWeight: "bold", color: "#666" }}>
+        ค่าลดหย่อน
+      </p>
+      <ControlsGrid>
         <label style={{ flexGrow: 1 }}>
           <small>ค่าลดหย่อน</small>
         </label>
@@ -566,7 +764,8 @@ function App() {
           style={{ width: "80px" }}
         />
       </ControlsGrid>
-      <div style={{ display: "flex", alignItems: "center", marginTop: "20px" }}>
+      <hr style={{ margin: "1rem 0", opacity: 0.2 }} />
+      <div style={{ display: "flex", alignItems: "center", marginTop: "10px" }}>
         <div style={{ flexGrow: 1, flexBasis: 0, textAlign: "center" }}>
           <small style={{ color: "#0af" }}>รายได้</small>
           <br />
@@ -576,41 +775,28 @@ function App() {
         <div style={{ flexGrow: 1, flexBasis: 0, textAlign: "center" }}>
           <small style={{ color: "#0af" }}>เงินได้สุทธิ</small>
           <br />
-          <span style={{ color: "#fff" }}>{numberWithCommas(netIncome)}</span>
+          <span style={{ color: "#fff" }}>
+            {numberWithCommas(Math.round(netIncome))}
+          </span>
         </div>
         <div>→</div>
         <div style={{ flexGrow: 1, flexBasis: 0, textAlign: "center" }}>
           <small style={{ color: "#f90" }}>ภาษี</small>
           <br />
-          <b>{numberWithCommas(Math.ceil(taxFinal))} ฿</b>
+          <b>{numberWithCommas(Math.ceil(taxFinal))} </b>
         </div>
       </div>
-    </>,
+    </ScrollBox>,
+    // </div>,
   ];
 
   useEffect(() => {
-    if (currentNarrativeStep == 1) {
-      if (income == 0) setSalary(30_000);
-    }
-
-    if (currentNarrativeStep == 2) {
-      setEnableExpense(true); //Expense(Math.min(income / 2, 100_000));
-    }
-
-    if (currentNarrativeStep == 3) {
-      if (allowance == 0) setAllowance(60_000);
-    }
-
-    if (currentNarrativeStep == 5) {
-      setShowBrackets(true);
-    }
-
-    if (currentNarrativeStep >= 6) {
-      setActivateTax(true);
-    } else {
-      setActivateTax(false);
-    }
-  }, [currentNarrativeStep, allowance, income, expense]);
+    setEnableIncome(currentNarrativeStep >= 1);
+    setEnableExpense(currentNarrativeStep >= 4);
+    setEnableAllowance(currentNarrativeStep >= 7);
+    setShowBrackets(currentNarrativeStep >= 9);
+    setActivateTax(currentNarrativeStep >= 10);
+  }, [currentNarrativeStep, enableAllowance, income, expense]);
 
   return (
     <>
@@ -628,7 +814,7 @@ function App() {
             justifyContent: "center",
             backgroundColor: "#222",
             zIndex: 100,
-            top: 50,
+            top: 30,
             padding: 50,
             paddingTop: 0,
             textAlign: "center",
@@ -664,14 +850,19 @@ function App() {
             justifyContent: "center",
             backgroundColor: "#222",
             zIndex: 100,
-            top: 50,
+            top: 30,
             padding: 50,
             paddingTop: 0,
             textAlign: "center",
           }}
         >
           <p>
-            ถ้าชอบ visualization นี้
+            เรื่องราวเกี่ยวกับภาษียังมีรายละเอียดมากกว่านี้อีก
+            สามารถอ่านเพิ่มเติมได้ที่เว็บไซต์
+            <a href="https://www.rd.go.th/548.html">กรมสรรพากร</a>
+          </p>
+          <p>
+            แต่ถ้าชอบ visualization นี้
             <br />
             แชร์ให้เพื่อนดูต่อได้เลย
           </p>
@@ -741,19 +932,21 @@ function App() {
             </Button>
           </div>
 
-          <p style={{ marginTop: '30px', color: '#888' }}>
-            Tax, visualized. was created by<br/>
-            <a href="https://taepras.com" style={{ color: '#888' }}>Tae Prasongpongchai</a>
-            </p>
-
+          <p style={{ marginTop: "30px", color: "#888" }}>
+            Tax, visualized. was created by
+            <br />
+            <a href="https://taepras.com" style={{ color: "#888" }}>
+              Tae Prasongpongchai
+            </a>
+          </p>
         </Step>
 
         <>
           <ChartContainer>
             <D3Component
               income={income}
-              expense={enableExpense ? expense : 0}
-              allowance={allowance}
+              expense={expense}
+              allowance={displayAllowance}
               taxBrackets={taxBrackets}
               isPullTax={isPullTax}
               setPullTax={setPullTax}
@@ -761,8 +954,8 @@ function App() {
               isActivateTax={isActivateTax}
               showBrackets={showBrackets}
               isBlink={{
-                tax: currentNarrativeStep == 6,
-                income: currentNarrativeStep == 4,
+                tax: currentNarrativeStep == 10,
+                income: currentNarrativeStep == 8,
                 // expense: currentNarrativeStep == 2,
                 // allowance: currentNarrativeStep == 3,
               }}
