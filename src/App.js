@@ -961,9 +961,9 @@ function App() {
           }}
         >
           <p>
-            เรื่องราวเกี่ยวกับภาษียังมีรายละเอียดมากกว่านี้อีก
-            สามารถอ่านเพิ่มเติมได้ที่เว็บไซต์
-            <a href="https://www.rd.go.th/548.html">กรมสรรพากร</a>
+            เรื่องราวเกี่ยวกับภาษียังมีรายละเอียด<br/>
+            กว่านี้อีกมาก สามารถอ่านเพิ่มเติมได้ที่<br/>
+            เว็บไซต์ <a href="https://www.rd.go.th/548.html">กรมสรรพากร</a>
           </p>
           <p>
             แต่ถ้าชอบ visualization นี้
@@ -1081,6 +1081,7 @@ function App() {
                 // expense: currentNarrativeStep == 2,
                 // allowance: currentNarrativeStep == 3,
               }}
+              isFocusIncome={currentNarrativeStep >= 8}
             />
           </ChartContainer>
           <SideContainer>

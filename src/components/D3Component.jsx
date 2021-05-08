@@ -52,6 +52,7 @@ export const D3Component = ({
     setPullTax = (x) => { },
     transitionTime = 500,
     enableTransition = true,
+    isFocusIncome = true,
     isBlink = {}
 }) => {
     const { observe, unobserve, width, height, entry } = useDimensions({
@@ -89,8 +90,8 @@ export const D3Component = ({
     const axisIncome = useMemo(() => d3.axisLeft(scaleIncome)
         .tickFormat(d3.format(".3s"))
         , [scaleIncome]);
-    const axisTaxRate = useMemo(() => d3.axisBottom(scaleTaxRate).tickFormat(d3.format('.0%'))
-        , [scaleTaxRate]);    
+    const axisTaxRate = useMemo(() => d3.axisBottom(scaleTaxRate).tickFormat(d3.format('.0%')).tickSize(-6).tickPadding(12)
+        , [scaleTaxRate]);
 
     useLayoutEffect(() => {
         if (d3Container.current) {
@@ -118,6 +119,7 @@ export const D3Component = ({
             d3.select("g.axis-tax-rate")
                 // .attr("transform", `translate(-10, 0)`)
                 .transition().duration(transitionDuration)
+                .attr('opacity', showBrackets ? 1 : 0)
                 .call(axisTaxRate);
         }
     }, [
@@ -151,9 +153,43 @@ export const D3Component = ({
                 <g transform={`translate(0, ${height}) scale(1, -1)`}>
                     <g className="container">
                         <g className="overview">
-                            <MoneyBlock amount={netIncome} scale={scaleIncome} offset={0} barWidth={barWidth} fill={theme.colors.income} label='เงินได้สุทธิ' stroke={false} enableTransition={enableTransition} isBlink={isBlink.income}/>
-                            <MoneyBlock amount={cleanedExpense} scale={scaleIncome} offset={netIncome + cleanedAllowance} barWidth={barWidth} fill={theme.colors.expense} label='ค่าใช้จ่าย' stroke={false} enableTransition={enableTransition}/>
-                            <MoneyBlock amount={cleanedAllowance} scale={scaleIncome} offset={netIncome} barWidth={barWidth} fill={theme.colors.allowance} label='ค่าลดหย่อน' stroke={false} enableTransition={enableTransition}/>
+                            <MoneyBlock
+                                amount={netIncome}
+                                scale={scaleIncome}
+                                offset={0}
+                                barWidth={barWidth}
+                                fill={theme.colors.income}
+                                label='เงินได้สุทธิ'
+                                stroke={false}
+                                enableTransition={enableTransition}
+                                isBlink={isBlink.income}
+                            />
+                            <MoneyBlock
+                                amount={cleanedExpense}
+                                scale={scaleIncome}
+                                offset={netIncome + cleanedAllowance}
+                                barWidth={barWidth}
+                                fill={isFocusIncome ? theme.colors.expenseText : theme.colors.expense}
+                                // fill={theme.colors.expenseText}
+                                label='ค่าใช้จ่าย'
+                                stroke={false}
+                                enableTransition={enableTransition}
+                                outlined={isFocusIncome}
+                                fade={isFocusIncome}
+                            />
+                            <MoneyBlock
+                                amount={cleanedAllowance}
+                                scale={scaleIncome}
+                                offset={netIncome}
+                                barWidth={barWidth}
+                                fill={isFocusIncome ? theme.colors.allowanceText : theme.colors.allowance}
+                                // fill={theme.colors.allowanceText}
+                                label='ค่าลดหย่อน'
+                                stroke={false}
+                                enableTransition={enableTransition}
+                                outlined={isFocusIncome}
+                                fade={isFocusIncome}
+                            />
                         </g>
                         <g className="breakdown">
                             {incomeGroups.map((ig, i) => <>
@@ -178,13 +214,14 @@ export const D3Component = ({
                                             : sum(incomeGroups.slice(0, i).map(x => x.income)) + (ig.income - +ig.expense)
                                     }
                                     barWidth={barWidth}
-                                    fill={theme.colors.expense}
+                                    fill={isFocusIncome ? theme.colors.expenseText : theme.colors.expense}
                                     label={'ค่าใช้จ่าย คิดจาก' + ig.label}
-                                    stroke={true} />
+                                    stroke={true}
+                                    outlined={isFocusIncome} />
                             </>)}
                         </g>
 
-                        <TaxBracketDisplay 
+                        <TaxBracketDisplay
                             barWidth={barWidth}
                             scaleIncome={scaleIncome}
                             scaleTaxRate={scaleTaxRate}
@@ -195,7 +232,8 @@ export const D3Component = ({
                         />
 
                         <g className="axis axis-income" />
-                        <g className="axis axis-tax-rate" />
+                        <g className="axis axis-tax-rate"/>
+                        <line className="axis axis-tax-blank" x1={0} x2={width - padding.left - padding.right} y1={0} y2={0} stroke="#fff" strokeOpacity={0.4}/>
                     </g>
                 </g>
                 <rect className="fade" fill="url(#fade-grad)" width={width} height={(height - padding.bottom) * 0.25} />

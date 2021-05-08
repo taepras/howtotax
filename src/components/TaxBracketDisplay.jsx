@@ -26,7 +26,7 @@ export const TaxBracketDisplay = ({
     active = false,
     transitionTime = 500,
     isPullTax = false,
-    setPullTax = () => {},
+    setPullTax = () => { },
 }) => {
     const transitionDuration = useMemo(() => enableTransition ? transitionTime : 0, [enableTransition, transitionTime]);
 
@@ -90,7 +90,8 @@ export const TaxBracketDisplay = ({
                 .attr('width', d => scaleTaxRate(d.taxRate))
                 .style('fill-opacity', 0)
                 .style('stroke', theme.colors.tax)
-                .style("stroke-dasharray", "3, 3")
+                .style('stroke-width', 1)
+                .style("stroke-dasharray", "5, 3")
                 .transition().duration(transitionDuration)
                 .attr('y', d => scaleIncome(d.minNetIncome))
                 .attr('height', d => scaleIncome(d.maxNetIncome - d.minNetIncome))
@@ -101,7 +102,8 @@ export const TaxBracketDisplay = ({
                 .attr('x1', 0)
                 .attr('x2', barWidth)
                 .style('stroke', theme.colors.tax)
-                .style("stroke-dasharray", "3, 3")
+                .style('stroke-width', 1)
+                .style("stroke-dasharray", "5, 3")
                 .transition().duration(transitionDuration)
                 // .style('stroke-opacity', '0.4')
                 .attr('y1', d => Math.round(scaleIncome(d.maxNetIncome)))
@@ -110,27 +112,32 @@ export const TaxBracketDisplay = ({
 
             bracketLineGroups.merge(bracketLineGroupsEnter)
                 .select('text.bracket-rate-text')
-                .style('fill', theme.colors.text)
                 .style('font-size', '0.75rem')
-                .style('text-anchor', 'end')
-                .attr('x', barWidth - 5)
+                .style('text-anchor', 'start')
+                .style('dominant-baseline', 'text-before-edge')
+                .attr('x', d => scaleTaxRate(d.taxRate) + 5)
+                // .attr('x', barWidth - 5)
                 .transition().duration(transitionDuration)
+                // .style('fill', theme.colors.text)
+                .style('fill', d => netIncome > d.minNetIncome ? theme.colors.text : theme.colors.taxText)
+                .style('font-weight', d => netIncome > d.minNetIncome ? 'bold' : 'normal')
                 .text(d => `เริ่มคิดที่ ${d.minNetIncome.toLocaleString()} บาท`)
-                .style('fill-opacity', (d, i) => i != 0 && scaleIncome(d.maxNetIncome - d.minNetIncome) > 20 ? 1 : 0)
-                .attr('y', d => -scaleIncome(d.minNetIncome) - 5)
+                .style('fill-opacity', (d, i) => i != 0 && scaleIncome(d.maxNetIncome - d.minNetIncome) > 40 ? 1 : 0)
+                .attr('y', d => -scaleIncome(d.minNetIncome) + 5)
                 .attr('opacity', active ? 1 : 0)
 
             bracketLineGroups.merge(bracketLineGroupsEnter)
                 .select('text.bracket-min-text')
-                .style('fill', theme.colors.text)
                 .style('font-size', '0.75rem')
                 .attr('x', d => scaleTaxRate(d.taxRate) + 5)
                 .transition().duration(transitionDuration)
+                .style('fill', d => netIncome > d.minNetIncome ? theme.colors.text : theme.colors.taxText)
+                .style('font-weight', d => netIncome > d.minNetIncome ? 'bold' : 'normal')
                 .text(d => `ภาษี ${d.taxRate * 100}%`)
                 // .text(d => scaleIncome(d.maxNetIncome - d.minNetIncome) > 150
                 //     ? `เริ่มคิดที่ ${numberWithCommas(d.minNetIncome)} บาท`
                 //     : `${d.taxRate * 100}%`)
-                .style('fill-opacity', (d, i) => i != 0 && scaleIncome(d.maxNetIncome - d.minNetIncome) > 20 ? 1 : 0)
+                .style('fill-opacity', (d, i) => i != 0 && scaleIncome(d.maxNetIncome - d.minNetIncome) > 40 ? 1 : 0)
                 .attr('y', d => -scaleIncome(d.minNetIncome) - 5)
                 .attr('opacity', active ? 1 : 0)
         }
@@ -152,7 +159,7 @@ export const TaxBracketDisplay = ({
     return (<>
         <defs>
             <clipPath id="net-income-mask">
-                <rect className="net-income-mask" ref={taxMaskRef}/>
+                <rect className="net-income-mask" ref={taxMaskRef} />
             </clipPath>
         </defs>
         <g id="tax-brackets" ref={taxBracketRef}>
