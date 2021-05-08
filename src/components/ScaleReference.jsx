@@ -42,7 +42,7 @@ const ScaleReference = ({ scale, barWidth, x, y, maxSize = 30,...props }) => {
 
     return (
         <g transform={`translate(${x}, ${y}) scale(1, -1)`}>
-            <rect fill={theme.colors.textMuted} ref={squareRef} />
+            <rect fill={theme.colors.income} ref={squareRef} />
             <text fill={theme.colors.textMuted} alignmentBaseline="middle" textAnchor="end" x={0} ref={textRef}>
                 {text}
             </text>
