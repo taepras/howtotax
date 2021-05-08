@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.css": "/taxvisualizer/static/css/main.b946ad68.chunk.css",
-    "main.js": "/taxvisualizer/static/js/main.300037ab.chunk.js",
-    "main.js.map": "/taxvisualizer/static/js/main.300037ab.chunk.js.map",
+    "main.css": "/taxvisualizer/static/css/main.d25b0aa6.chunk.css",
+    "main.js": "/taxvisualizer/static/js/main.6307aa8a.chunk.js",
+    "main.js.map": "/taxvisualizer/static/js/main.6307aa8a.chunk.js.map",
     "runtime-main.js": "/taxvisualizer/static/js/runtime-main.1053c7ec.js",
     "runtime-main.js.map": "/taxvisualizer/static/js/runtime-main.1053c7ec.js.map",
     "static/js/2.112bcaa8.chunk.js": "/taxvisualizer/static/js/2.112bcaa8.chunk.js",
@@ -10,13 +10,13 @@
     "static/js/3.d3ea2b07.chunk.js": "/taxvisualizer/static/js/3.d3ea2b07.chunk.js",
     "static/js/3.d3ea2b07.chunk.js.map": "/taxvisualizer/static/js/3.d3ea2b07.chunk.js.map",
     "index.html": "/taxvisualizer/index.html",
-    "static/css/main.b946ad68.chunk.css.map": "/taxvisualizer/static/css/main.b946ad68.chunk.css.map",
+    "static/css/main.d25b0aa6.chunk.css.map": "/taxvisualizer/static/css/main.d25b0aa6.chunk.css.map",
     "static/js/2.112bcaa8.chunk.js.LICENSE.txt": "/taxvisualizer/static/js/2.112bcaa8.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.1053c7ec.js",
     "static/js/2.112bcaa8.chunk.js",
-    "static/css/main.b946ad68.chunk.css",
-    "static/js/main.300037ab.chunk.js"
+    "static/css/main.d25b0aa6.chunk.css",
+    "static/js/main.6307aa8a.chunk.js"
   ]
 }
