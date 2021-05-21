@@ -5,7 +5,7 @@ import { theme } from '../theme';
 
 const StoryIndicatorContainer = styled.div`
     display: flex;
-    gap: 4px;
+    gap: 6px;
     position: absolute;
     top: 15px;
     left: 30px;
@@ -19,7 +19,7 @@ const StoryIndicatorContainer = styled.div`
 `;
 
 const StoryIndicatorItem = styled.div`
-    height: 2px;
+    height: 3px;
     flex-grow: 1;
     border-radius: 999;
     background-color: ${theme.colors.text};

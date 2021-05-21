@@ -2,9 +2,10 @@ export const theme = {
   colors: {
     bg: '#F1E8E8',
     text: '#222222',
-    textMuted: '#22222288',
+    textSecondary: '#222222aa',
+    textMuted: '#22222266',
     income: '#0851A6',
-    incomeText: '#002D62',
+    incomeText: '#0851A6',
     expense: '#4FA01E',
     expenseText: '#317706',
     allowance: '#B346D9',

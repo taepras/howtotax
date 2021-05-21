@@ -23,6 +23,7 @@ const CoverPage = ({ currentNarrativeStep, setCurrentNarrativeStep }) => (
     <h1 style={{
       color: theme.colors.text,
       marginTop: -30,
+      marginBottom: 16,
     }}
     >
       เข้าใจภาษี
@@ -30,7 +31,7 @@ const CoverPage = ({ currentNarrativeStep, setCurrentNarrativeStep }) => (
       แบบเห็นภาพ
     </h1>
     <p>
-      คำนวณภาษียากจัง!? มาลองคิดภาษี
+      คำนวณภาษียากจัง? มาลองคิดภาษี
       <br />
       สไตล์มนุษย์เงินเดือนมือใหม่แบบคร่าวๆ
       <br />
@@ -38,12 +39,12 @@ const CoverPage = ({ currentNarrativeStep, setCurrentNarrativeStep }) => (
     </p>
     <Button
       style={{
-        padding: '8px 16px',
+        padding: '8px 32px',
         borderRadius: 8,
         backgroundColor: theme.colors.income,
         color: theme.colors.white,
         fontWeight: 'bold',
-        fontSize: '1rem',
+        fontSize: '1.125rem',
       }}
       onClick={() => setCurrentNarrativeStep(0)}
     >
@@ -57,13 +58,14 @@ const CoverPage = ({ currentNarrativeStep, setCurrentNarrativeStep }) => (
       </small>
     </p> */}
     <p style={{
-      color: theme.colors.income,
+      color: theme.colors.textSecondary,
       marginTop: '1rem',
       position: ' absolute',
       bottom: 30,
       left: 0,
       right: 0,
       textAlign: 'center',
+      lineHeight: 1.2,
     }}
     >
       <small>
