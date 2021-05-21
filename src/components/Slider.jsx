@@ -23,10 +23,14 @@ const StyledThumb = styled.div`
 `;
 
 const StyledTrack = styled.div`
-    top: 6px;
-    bottom: 6px;
-    background: ${(props) => (props.index === 1 ? '#fff3' : darken(0.15, props.color || '#08f'))};
-    border-radius: 999px;
+  top: 6px;
+  bottom: 6px;
+  background: ${(props) => (
+    props.index === 1
+      ? '#0002'
+      : darken(0.05, props.color || '#08f')
+  )};
+  border-radius: 999px;
 `;
 
 const Tooltip = styled.div`
