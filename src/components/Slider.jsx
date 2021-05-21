@@ -1,6 +1,6 @@
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import ReactSlider from 'react-slider';
-import { useState } from 'react';
 import { darken, lighten } from 'polished';
 
 const StyledSlider = styled(ReactSlider)`
@@ -13,8 +13,8 @@ const StyledThumb = styled.div`
     line-height: 20px;
     width: 20px;
     text-align: center;
-    background-color: ${props => props.color || '#08f'};
-    /* border: 2px ${props =>  darken(0.1, props.color || '#08f')} solid; */
+    background-color: ${(props) => props.color || '#08f'};
+    /* border: 2px ${(props) => darken(0.1, props.color || '#08f')} solid; */
     box-sizing: border-box;
     color: #fff;
     border-radius: 12px;
@@ -25,12 +25,12 @@ const StyledThumb = styled.div`
 const StyledTrack = styled.div`
     top: 6px;
     bottom: 6px;
-    background: ${props => props.index === 1 ? '#fff3' : darken(0.15, props.color || '#08f')};
+    background: ${(props) => (props.index === 1 ? '#fff3' : darken(0.15, props.color || '#08f'))};
     border-radius: 999px;
 `;
 
 const Tooltip = styled.div`
-    opacity: ${props => props.visible ? 1 : 0};
+    opacity: ${(props) => (props.visible ? 1 : 0)};
     position: absolute;
     top: -40px;
     left: 50%;
@@ -43,23 +43,31 @@ const Tooltip = styled.div`
     pointer-events: none;
 `;
 
-const Slider = ({ onBeforeChange = () => { }, onAfterChange = () => { }, color, ...props }) => {
-    const [showTooltip, setShowTooltip] = useState(false);
-    return <StyledSlider
-        renderTrack={(props, state) => <StyledTrack {...props} index={state.index} color={color}/>}
-        renderThumb={(props, state) => <StyledThumb {...props} color={color}>
-            <Tooltip visible={showTooltip}>{state.valueNow.toLocaleString()}</Tooltip>
-        </StyledThumb>}
-        onBeforeChange={(x) => {
-            setShowTooltip(true)
-            onBeforeChange(x);
-        }}
-        onAfterChange={(x) => {
-            setShowTooltip(false)
-            onAfterChange(x);
-        }}
-        {...props}
+const Slider = ({
+  onBeforeChange = () => { }, onAfterChange = () => { }, color, ...props
+}) => {
+  const [showTooltip, setShowTooltip] = useState(false);
+  return (
+    <StyledSlider
+      renderTrack={
+        (trackProps, state) => <StyledTrack {...trackProps} index={state.index} color={color} />
+      }
+      renderThumb={(thumbProps, state) => (
+        <StyledThumb {...thumbProps} color={color}>
+          <Tooltip visible={showTooltip}>{state.valueNow.toLocaleString()}</Tooltip>
+        </StyledThumb>
+      )}
+      onBeforeChange={(x) => {
+        setShowTooltip(true);
+        onBeforeChange(x);
+      }}
+      onAfterChange={(x) => {
+        setShowTooltip(false);
+        onAfterChange(x);
+      }}
+      {...props}
     />
-}
+  );
+};
 
 export default Slider;

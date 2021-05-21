@@ -1,7 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback, useEffect, useRef, useState,
+} from 'react';
 import styled from 'styled-components';
-import { theme } from '../theme';
 import { transparentize } from 'polished';
+import { theme } from '../theme';
 
 const FadeTop = styled.div`
     position: absolute;
@@ -14,8 +16,8 @@ const FadeTop = styled.div`
     z-index: 1;
 
     transition: all 0.2s;
-    opacity: ${props => props.active ? 1 : 0};
-`
+    opacity: ${(props) => (props.active ? 1 : 0)};
+`;
 
 const FadeBottom = styled.div`
     position: absolute;
@@ -28,8 +30,8 @@ const FadeBottom = styled.div`
     z-index: 1;
 
     transition: all 0.2s;
-    opacity: ${props => props.active ? 1 : 0};
-`
+    opacity: ${(props) => (props.active ? 1 : 0)};
+`;
 
 const ScrollBoxContainer = styled.div`
     /* position: absolute;
@@ -40,53 +42,60 @@ const ScrollBoxContainer = styled.div`
     position: relative;
     overflow-y: auto;
     overflow-x: hidden;
-`
+`;
 
 const StyledScrollBox = styled.div`
     position: relative;
     flex-grow: 1;
     overflow-y: auto;
     overflow-x: hidden;
-`
+`;
 
 const ScrollBox = ({ children, onScroll, ...props }) => {
-    const scrollBoxRef = useRef(null);
-    const [showTopFade, setShowTopFade] = useState(true);
-    const [showBottomFade, setShowBottomFade] = useState(true);
+  const scrollBoxRef = useRef(null);
+  const [showTopFade, setShowTopFade] = useState(true);
+  const [showBottomFade, setShowBottomFade] = useState(true);
 
-    const handleScroll = useCallback((e) => {
+  const handleScroll = useCallback((e) => {
+    if (scrollBoxRef.current) {
+      setShowTopFade(scrollBoxRef.current.scrollTop > 0);
+      setShowBottomFade(
+        (
+          scrollBoxRef.current.offsetHeight
+          + scrollBoxRef.current.scrollTop
+        ) < scrollBoxRef.current.scrollHeight,
+      );
+    }
+  }, [scrollBoxRef]);
+
+  /* eslint-disable-next-line consistent-return */
+  useEffect(() => {
+    if (scrollBoxRef.current) {
+      console.log('registering handleScroll', handleScroll);
+      scrollBoxRef.current.addEventListener('scroll', (e) => {
+        onScroll(e);
+        handleScroll(e);
+      });
+      return () => {
         if (scrollBoxRef.current) {
-            setShowTopFade(scrollBoxRef.current.scrollTop > 0);
-            setShowBottomFade(scrollBoxRef.current.offsetHeight + scrollBoxRef.current.scrollTop < scrollBoxRef.current.scrollHeight);
+          /* eslint-disable-next-line react-hooks/exhaustive-deps */
+          scrollBoxRef.current.removeEventListener('scroll', handleScroll);
         }
-    }, [scrollBoxRef]);
+      };
+    }
+  }, [scrollBoxRef, handleScroll, onScroll]);
 
-    useEffect(() => {
-        if (scrollBoxRef.current) {
-            console.log('registering handleScroll', handleScroll);
-            scrollBoxRef.current.addEventListener('scroll', (e) => {
-                onScroll(e);
-                handleScroll(e);
-            });
-            return () => {
-                if (scrollBoxRef.current)
-                    scrollBoxRef.current.removeEventListener('scroll', handleScroll);
-            }
-        }
-    }, [scrollBoxRef, handleScroll])
+  useEffect(handleScroll, [scrollBoxRef, handleScroll]);
 
-    useEffect(handleScroll, [scrollBoxRef]);
-
-    return (
-        <>
-            <StyledScrollBox ref={scrollBoxRef} {...props}>
-                {children}
-            </StyledScrollBox>
-            <FadeTop active={showTopFade} />
-            <FadeBottom active={showBottomFade} />
-        </>
-    );
-}
+  return (
+    <>
+      <StyledScrollBox ref={scrollBoxRef} {...props}>
+        {children}
+      </StyledScrollBox>
+      <FadeTop active={showTopFade} />
+      <FadeBottom active={showBottomFade} />
+    </>
+  );
+};
 
 export default ScrollBox;
-

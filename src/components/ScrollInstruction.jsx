@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { keyframes, css } from 'styled-components';
-
+/* eslint-disable */
 const scrollPreview = keyframes`
   0% {
     opacity: 0;
@@ -21,7 +21,7 @@ const scrollPreview = keyframes`
     opacity: 0;
     transform: translate(-50%, 0);
   }
-`
+`;
 
 const ScrollInstruction = styled.div`
     width: 64px;
@@ -30,13 +30,13 @@ const ScrollInstruction = styled.div`
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    ${props => props.visible && css`animation: ${scrollPreview} 2s infinite`};
+    ${(props) => props.visible && css`animation: ${scrollPreview} 2s infinite`};
     background: url('${process.env.PUBLIC_URL}/drag.svg');
     background-size: cover;
-    opacity: ${props => props.visible ? 1 : 0};
+    opacity: ${(props) => (props.visible ? 1 : 0)};
     
     transition: all 0.2s;
-`
+`;
 
 // const ScrollInstruction = ({ ...props }) =>
 // <StyledScrollInstruction {...props} />
