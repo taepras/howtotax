@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+import { theme } from '../theme';
 
 const Button = styled.button`
   border: none;
@@ -8,12 +9,13 @@ const Button = styled.button`
 
   ${(props) => (props.secondary
     ? css`
-          border: 1px white solid;
+          border: 1px ${theme.colors.income} solid;
           background-color: transparent;
-          color: white;
+          color: ${theme.colors.income} !important;
         `
     : css`
-          background-color: white;
+          background-color: ${theme.colors.income};
+          color: ${theme.colors.white};
         `)}
 
   ${(props) => props.disabled

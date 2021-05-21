@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import * as d3 from 'd3';
+import { theme } from '../theme';
 
 const StoryIndicatorContainer = styled.div`
     display: flex;
@@ -21,7 +22,7 @@ const StoryIndicatorItem = styled.div`
     height: 2px;
     flex-grow: 1;
     border-radius: 999;
-    background-color: #fff;
+    background-color: ${theme.colors.text};
     transition: opacity 0.2s;
     opacity: ${(props) => (props.active ? 1 : 0.2)};
 `;

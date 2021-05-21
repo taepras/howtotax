@@ -118,7 +118,7 @@ export const TaxBracketDisplay = ({
         .transition()
         .duration(transitionDuration)
       // .style('fill', theme.colors.text)
-        .style('fill', (d) => (netIncome > d.minNetIncome ? theme.colors.text : theme.colors.taxText))
+        .style('fill', (d) => (netIncome > d.minNetIncome ? theme.colors.white : theme.colors.taxText))
         .style('font-weight', (d) => (netIncome > d.minNetIncome ? 'bold' : 'normal'))
         .text((d) => `เริ่มคิดที่ ${d.minNetIncome.toLocaleString()} บาท`)
         .style('fill-opacity', (d, i) => (i !== 0 && scaleIncome(d.maxNetIncome - d.minNetIncome) > 40 ? 1 : 0))
@@ -131,7 +131,7 @@ export const TaxBracketDisplay = ({
         .attr('x', (d) => scaleTaxRate(d.taxRate) + 5)
         .transition()
         .duration(transitionDuration)
-        .style('fill', (d) => (netIncome > d.minNetIncome ? theme.colors.text : theme.colors.taxText))
+        .style('fill', (d) => (netIncome > d.minNetIncome ? theme.colors.white : theme.colors.taxText))
         .style('font-weight', (d) => (netIncome > d.minNetIncome ? 'bold' : 'normal'))
         .text((d) => `ภาษี ${d.taxRate * 100}%`)
       // .text(d => scaleIncome(d.maxNetIncome - d.minNetIncome) > 150

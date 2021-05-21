@@ -261,7 +261,15 @@ export const D3Component = ({
 
               <g className="axis axis-income" />
               <g className="axis axis-tax-rate" />
-              <line className="axis axis-tax-blank" x1={0} x2={width - padding.left - padding.right} y1={0} y2={0} stroke="#fff" strokeOpacity={0.4} />
+              <line
+                className="axis axis-tax-blank"
+                x1={0}
+                x2={width - padding.left - padding.right}
+                y1={0}
+                y2={0}
+                stroke={theme.colors.text}
+                strokeOpacity={0.4}
+              />
             </g>
           </g>
           <rect className="fade" fill="url(#fade-grad)" width={width} height={(height - padding.bottom) * 0.25} />
