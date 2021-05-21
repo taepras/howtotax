@@ -11,6 +11,8 @@ const CoverPage = ({ currentNarrativeStep, setCurrentNarrativeStep }) => (
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: theme.colors.bg,
+      color: theme.colors.text,
+      // color: theme.colors.incomeText,
       zIndex: 100,
       top: 30,
       padding: 50,
@@ -18,7 +20,11 @@ const CoverPage = ({ currentNarrativeStep, setCurrentNarrativeStep }) => (
       textAlign: 'center',
     }}
   >
-    <h1>
+    <h1 style={{
+      color: theme.colors.text,
+      marginTop: -30,
+    }}
+    >
       เข้าใจภาษี
       <br />
       แบบเห็นภาพ
@@ -34,7 +40,8 @@ const CoverPage = ({ currentNarrativeStep, setCurrentNarrativeStep }) => (
       style={{
         padding: '8px 16px',
         borderRadius: 8,
-        backgroundColor: theme.colors.tax,
+        backgroundColor: theme.colors.income,
+        color: theme.colors.white,
         fontWeight: 'bold',
         fontSize: '1rem',
       }}
@@ -50,7 +57,7 @@ const CoverPage = ({ currentNarrativeStep, setCurrentNarrativeStep }) => (
       </small>
     </p> */}
     <p style={{
-      color: theme.colors.textMuted,
+      color: theme.colors.income,
       marginTop: '1rem',
       position: ' absolute',
       bottom: 30,

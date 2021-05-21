@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { D3Component } from './components/D3Component';
-import './App.css';
 import { useNetIncome, useTaxCalculation } from './utils/TaxCalculation';
 import StoryIndicator from './components/StoryIndicator';
 import ScrollBox from './components/ScrollBox';
@@ -16,6 +15,7 @@ import Step from './components/Step';
 import CoverPage from './pages/CoverPage';
 import EndingPage from './pages/EndingPage';
 import PageNavigator from './components/PageNavigator';
+import GlobalStyle from './styles/globalStyles';
 
 const ChartContainer = styled.div`
   /* padding: 30px; */
@@ -342,7 +342,7 @@ function App() {
           step={10_000}
           value={salary}
           onAfterChange={setSalary}
-          color={theme.colors.incomeText}
+          color={theme.colors.income}
         />
       </ControlsContainer>
       {/* <small style={{ marginLeft: "auto", color: theme.colors.textMuted }}>
@@ -374,7 +374,7 @@ function App() {
           step={10_000}
           value={incomeFreelance}
           onAfterChange={setIncomeFreelance}
-          color={theme.colors.incomeText}
+          color={theme.colors.income}
         />
         <div>
           <input
@@ -400,7 +400,7 @@ function App() {
           step={10_000}
           value={incomeMerchant}
           onAfterChange={setIncomeMerchant}
-          color={theme.colors.incomeText}
+          color={theme.colors.income}
         />
         <div>
           <input
@@ -544,7 +544,7 @@ function App() {
           step={10_000}
           value={allowance}
           onAfterChange={setAllowance}
-          color={theme.colors.allowanceText}
+          color={theme.colors.allowance}
         />
       </ControlsContainer>
       <small style={{ marginLeft: 'auto', color: theme.colors.textMuted }}>
@@ -664,12 +664,12 @@ function App() {
           <small>เงินเดือน</small>
         </label>
         <Slider
-          min={60_000}
+          min={0}
           max={1_200_000}
           step={10_000}
           value={salary}
           onAfterChange={setSalary}
-          color={theme.colors.incomeText}
+          color={theme.colors.income}
         />
         <div>
           <input
@@ -686,12 +686,12 @@ function App() {
           <small>ฟรีแลนซ์</small>
         </label>
         <Slider
-          min={60_000}
+          min={0}
           max={1_200_000}
           step={10_000}
           value={incomeFreelance}
           onAfterChange={setIncomeFreelance}
-          color={theme.colors.incomeText}
+          color={theme.colors.income}
         />
         <div>
           <input
@@ -708,12 +708,12 @@ function App() {
           <small>ขายของ</small>
         </label>
         <Slider
-          min={60_000}
+          min={0}
           max={1_200_000}
           step={10_000}
           value={incomeMerchant}
           onAfterChange={setIncomeMerchant}
-          color={theme.colors.incomeText}
+          color={theme.colors.income}
         />
         <div>
           <input
@@ -806,7 +806,7 @@ function App() {
           step={10_000}
           value={allowance}
           onAfterChange={setAllowance}
-          color={theme.colors.allowanceText}
+          color={theme.colors.allowance}
         />
         <input
           type="number"
@@ -860,6 +860,7 @@ function App() {
 
   return (
     <>
+      <GlobalStyle />
       <StoryIndicator
         currentStep={currentNarrativeStep}
         totalSteps={narrativeSteps.length + 1}

@@ -110,7 +110,7 @@ export const MoneyBlock = ({
           x={strokeWidth / 2}
           y={strokeWidth / 2}
           fill={outlined ? 'transparent' : fill}
-          stroke={outlined ? fill : theme.colors.text}
+          stroke={outlined ? fill : theme.colors.white}
           strokeWidth={strokeWidth}
           // strokeOpacity={(outlined ? 1 : stroke ? 0.6 : 0) * fadeOp}
           strokeDasharray="5, 3"
@@ -120,7 +120,7 @@ export const MoneyBlock = ({
         <text
           className="label"
           style={{
-            fill: outlined ? fill : theme.colors.text,
+            fill: outlined ? fill : theme.colors.white,
             fontSize: '0.75rem',
             alignmentBaseline: 'middle',
             textAnchor: 'middle',
