@@ -17,39 +17,61 @@ const CoverPage = ({ currentNarrativeStep, setCurrentNarrativeStep }) => (
       top: 30,
       padding: 50,
       paddingTop: 30,
+      marginTop: -30,
       textAlign: 'center',
+      backgroundImage: `url('${process.env.PUBLIC_URL}/bg_fast.gif')`,
+      backgroundSize: '97.2px 21.6px',
+      backgroundPosition: 'center center',
     }}
   >
-    <h1 style={{
-      color: theme.colors.text,
-      marginTop: -30,
-      marginBottom: 16,
-    }}
-    >
-      เข้าใจภาษี
-      <br />
-      แบบเห็นภาพ
-    </h1>
-    <p>
-      คำนวณภาษียากจัง? มาลองคิดภาษี
-      <br />
-      สไตล์มนุษย์เงินเดือนมือใหม่แบบคร่าวๆ
-      <br />
-      ผ่าน data visualization กัน!
-    </p>
-    <Button
+    <div
       style={{
-        padding: '8px 32px',
-        borderRadius: 8,
-        backgroundColor: theme.colors.income,
-        color: theme.colors.white,
-        fontWeight: 'bold',
-        fontSize: '1.125rem',
+        position: 'absolute',
+        left: '50%',
+        top: 'calc(50% - 30px)',
+        transform: 'translate(-50%, -50%)',
+        borderRadius: '50%',
+        backgroundColor: theme.colors.bg,
+        padding: '64px',
+        width: '360px',
+        height: '360px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
       }}
-      onClick={() => setCurrentNarrativeStep(0)}
     >
-      เริ่มเลย
-    </Button>
+      <h1 style={{
+        color: theme.colors.text,
+        // marginTop: -30,
+        marginBottom: 16,
+      }}
+      >
+        เข้าใจภาษี
+        <br />
+        แบบเห็นภาพ
+      </h1>
+      <p>
+        คำนวณภาษียากจัง? มาลองคิดภาษี
+        <br />
+        สไตล์มนุษย์เงินเดือนมือใหม่แบบคร่าวๆ
+        <br />
+        ผ่าน data visualization กัน!
+      </p>
+      <Button
+        style={{
+          padding: '8px 32px',
+          borderRadius: 8,
+          backgroundColor: theme.colors.income,
+          color: theme.colors.white,
+          fontWeight: 'bold',
+          fontSize: '1.125rem',
+        }}
+        onClick={() => setCurrentNarrativeStep(0)}
+      >
+        เริ่มเลย
+      </Button>
+    </div>
     {/* <p style={{ color: theme.colors.textMuted, marginTop: '1rem' }}>
       <small>
         *เว็บไซต์นี้ไม่มีการเก็บข้อมูลตัวเลขที่คุณกรอก

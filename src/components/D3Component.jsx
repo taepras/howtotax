@@ -181,6 +181,7 @@ export const D3Component = ({
                   stroke={false}
                   enableTransition={enableTransition}
                   isBlink={isBlink.income}
+                  id="netincome"
                 />
                 <MoneyBlock
                   amount={cleanedExpense}
@@ -194,6 +195,7 @@ export const D3Component = ({
                   enableTransition={enableTransition}
                   outlined={isFocusIncome}
                   fade={isFocusIncome}
+                  id="expense"
                 />
                 <MoneyBlock
                   amount={cleanedAllowance}
@@ -207,6 +209,7 @@ export const D3Component = ({
                   enableTransition={enableTransition}
                   outlined={isFocusIncome}
                   fade={isFocusIncome}
+                  id="allowance"
                 />
               </g>
               <g className="breakdown">
@@ -224,6 +227,7 @@ export const D3Component = ({
                       fill={theme.colors.income}
                       label={ig.label}
                       stroke
+                      id={`profit-x-${i}`}
                     />
                     <MoneyBlock
                       amount={ig.expense}
@@ -244,6 +248,7 @@ export const D3Component = ({
                       label={`ค่าใช้จ่าย คิดจาก${ig.label}`}
                       stroke
                       outlined={isFocusIncome}
+                      id={`expense-x-${i}`}
                     />
                   </>
                 ))}
