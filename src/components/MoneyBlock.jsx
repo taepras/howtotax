@@ -28,6 +28,7 @@ export const MoneyBlock = ({
   fade = false,
   transitionTime = 500,
   stroke,
+  id = 0,
 }) => {
   const transitionDuration = useMemo(
     () => (enableTransition ? transitionTime : 0),
@@ -35,6 +36,7 @@ export const MoneyBlock = ({
   );
 
   const moneyBlockRef = useRef(null);
+  const patternRef = useRef(null);
   const strokeWidth = 1;
 
   const fadeOp = useMemo(() => (fade ? 0.3 : 1), [fade]);
@@ -89,13 +91,71 @@ export const MoneyBlock = ({
     stroke,
   ]);
 
+  const sizeOf1000 = useMemo(() => {
+    const areaTotal = barWidth * scale(amount);
+    const valueTotal = amount;
+    const bankNoteAspectRatio = 2.25;
+
+    const bankNoteArea = valueTotal === 0 ? 0 : (1000 * areaTotal) / valueTotal;
+    const h = Math.sqrt(bankNoteArea / bankNoteAspectRatio);
+    return {
+      area: bankNoteArea,
+      width: h * bankNoteAspectRatio,
+      height: h,
+    };
+  }, [amount, barWidth, scale]);
+
+  useEffect(() => {
+    if (patternRef.current) {
+      const pattern = d3.select(patternRef.current);
+
+      console.log(sizeOf1000, barWidth, amount);
+      pattern.transition().duration(500)
+        .attr('width', (sizeOf1000.width ?? 0) / barWidth)// Math.sqrt(rectSide.ref / 1000))
+        .attr('height', (sizeOf1000.height ?? 0) / (amount === 0 ? 1 : scale(amount)))// Math.sqrt(rectSide.ref / 1000))
+        .attr('x', 0)
+        .attr('y', 0);
+
+      pattern.select('image')
+        .transition().duration(500)
+        .attr('width', sizeOf1000.width)
+        .attr('height', sizeOf1000.height)
+        .attr('y', -sizeOf1000.height);
+    }
+  }, [patternRef, sizeOf1000, barWidth, scale, amount]);
+
   return (
     <>
       <g ref={moneyBlockRef}>
+        <defs>
+          <pattern
+            ref={patternRef}
+            id={`bank1000-${id}`}
+            x="0"
+            y="0"
+            // width={sizeOf1000.width / barWidth}
+            // height={sizeOf1000.height / scale(amount)}
+          >
+            <image
+              href={`${process.env.PUBLIC_URL}/bank1000.png`}
+              // width={sizeOf1000.width}
+              // height={sizeOf1000.height}
+              transform="scale(1, -1)"
+              // y={-sizeOf1000.height}
+            />
+            <rect
+              width="100%"
+              height="100%"
+              fill={fill}
+              fillOpacity={0.5}
+            />
+          </pattern>
+        </defs>
         <rect
           className="block"
           width={barWidth}
-          fill={outlined ? 'transparent' : fill}
+          fill={outlined ? 'transparent' : `url(#bank1000-${id})`}
+          // fill={outlined ? 'transparent' : fill}
           // opacity={fadeOp}
           // stroke={outlined ? fill : theme.colors.text}
           // stroke-opacity={outlined ? 1 : stroke ? 0.6 : 0}
@@ -109,7 +169,8 @@ export const MoneyBlock = ({
           width={barWidth - strokeWidth}
           x={strokeWidth / 2}
           y={strokeWidth / 2}
-          fill={outlined ? 'transparent' : fill}
+          // fill={outlined ? 'transparent' : fill}
+          fill={outlined ? 'transparent' : `url(#bank1000-${id})`}
           stroke={outlined ? fill : theme.colors.white}
           strokeWidth={strokeWidth}
           // strokeOpacity={(outlined ? 1 : stroke ? 0.6 : 0) * fadeOp}
