@@ -1,5 +1,5 @@
 {
-  "name": "taxvisualizer",
+  "name": "howtotax",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -45,7 +45,7 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "https://taepras.github.io/taxvisualizer/",
+  "homepage": "https://taepras.github.io/howtotax/",
   "devDependencies": {
     "eslint-config-airbnb": "^18.2.1"
   }
