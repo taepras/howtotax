@@ -176,7 +176,7 @@ export const D3Component = ({
                   scale={scaleIncome}
                   offset={0}
                   barWidth={barWidth}
-                  fill={theme.colors.income}
+                  fill="transparent"
                   label="เงินได้สุทธิ"
                   stroke={false}
                   enableTransition={enableTransition}
@@ -194,7 +194,7 @@ export const D3Component = ({
                   stroke={false}
                   enableTransition={enableTransition}
                   outlined={isFocusIncome}
-                  fade={isFocusIncome}
+                  // fade={isFocusIncome}
                   id="expense"
                 />
                 <MoneyBlock
@@ -208,7 +208,7 @@ export const D3Component = ({
                   stroke={false}
                   enableTransition={enableTransition}
                   outlined={isFocusIncome}
-                  fade={isFocusIncome}
+                  // fade={isFocusIncome}
                   id="allowance"
                 />
               </g>
@@ -224,7 +224,8 @@ export const D3Component = ({
                           : sum(incomeGroups.slice(0, i).map((x) => x.income))
                       }
                       barWidth={barWidth}
-                      fill={theme.colors.income}
+                      fill="transparent"
+                      // fill={theme.colors.income}
                       label={ig.label}
                       stroke
                       id={`profit-x-${i}`}

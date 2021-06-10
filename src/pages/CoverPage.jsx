@@ -71,6 +71,33 @@ const CoverPage = ({ currentNarrativeStep, setCurrentNarrativeStep }) => (
       >
         เริ่มเลย
       </Button>
+      {/* <p style={{
+        color: theme.colors.textSecondary,
+        marginTop: '1rem',
+        position: ' absolute',
+        bottom: 30,
+        left: 0,
+        right: 0,
+        textAlign: 'center',
+        lineHeight: 1.2,
+      }}
+      > */}
+      <p style={{
+        color: theme.colors.textSecondary,
+        marginTop: '3rem',
+        marginBottom: '-3rem',
+        textAlign: 'center',
+        lineHeight: 1.2,
+      }}
+      >
+        <small>
+          a data visualization experiment by
+          <br />
+          <a href="https://taepras.com" target="_blank" rel="noreferrer" style={{ color: 'inherit' }}>
+            Tae Prasongpongchai
+          </a>
+        </small>
+      </p>
     </div>
     {/* <p style={{ color: theme.colors.textMuted, marginTop: '1rem' }}>
       <small>
@@ -79,25 +106,6 @@ const CoverPage = ({ currentNarrativeStep, setCurrentNarrativeStep }) => (
         และไม่มีข้อผูกพันทางกฎหมายใดๆ
       </small>
     </p> */}
-    <p style={{
-      color: theme.colors.textSecondary,
-      marginTop: '1rem',
-      position: ' absolute',
-      bottom: 30,
-      left: 0,
-      right: 0,
-      textAlign: 'center',
-      lineHeight: 1.2,
-    }}
-    >
-      <small>
-        a data visualization experiment by
-        <br />
-        <a href="https://taepras.com" target="_blank" rel="noreferrer" style={{ color: 'inherit' }}>
-          Tae Prasongpongchai
-        </a>
-      </small>
-    </p>
   </Step>
 );
 
