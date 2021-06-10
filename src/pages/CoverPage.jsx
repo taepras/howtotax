@@ -47,14 +47,15 @@ const CoverPage = ({ currentNarrativeStep, setCurrentNarrativeStep }) => (
         marginBottom: 16,
       }}
       >
-        เข้าใจภาษี
+        เข้าใจ
+        <span style={{ color: theme.colors.taxText }}>ภาษี</span>
         <br />
         แบบเห็นภาพ
       </h1>
       <p>
-        คำนวณภาษียากจัง? มาลองคิดภาษี
+        คำนวณภาษียากจัง!? มาลองคิดภาษี
         <br />
-        สไตล์มนุษย์เงินเดือนมือใหม่แบบคร่าวๆ
+        แบบคร่าวๆ สไตล์มือใหม่หัดทำภาษี
         <br />
         ผ่าน data visualization กัน!
       </p>

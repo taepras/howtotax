@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+
 import React, { useEffect, useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { D3Component } from './components/D3Component';
@@ -15,6 +17,7 @@ import Step from './components/Step';
 import CoverPage from './pages/CoverPage';
 import EndingPage from './pages/EndingPage';
 import PageNavigator from './components/PageNavigator';
+import Pill from './components/Pill';
 import GlobalStyle from './styles/globalStyles';
 
 const ChartContainer = styled.div`
@@ -216,9 +219,9 @@ function NetIncomeEquation({
 
 function App() {
   // income stated & computed numbers
-  const [salary, setSalary] = useState(0);
-  const [incomeFreelance, setIncomeFreelance] = useState(0);
-  const [incomeMerchant, setIncomeMerchant] = useState(0);
+  const [salary, setSalary] = useState(300_000);
+  const [incomeFreelance, setIncomeFreelance] = useState(50_000);
+  const [incomeMerchant, setIncomeMerchant] = useState(50_000);
   const [enableIncome, setEnableIncome] = useState(false);
   const salaryDisplay = useMemo(
     () => (enableIncome ? salary : 0),
@@ -279,33 +282,37 @@ function App() {
   const [showBreakdown, setShowBreakdown] = useState(true);
   const [showDragInstruction, setShowDragInstruction] = useState(true);
 
+  // หลายคนอาจจะเคยเห็นตาราง "อัตราภาษีเงินได้บุคคลธรรมดา" หน้าตาแบบนี้ แต่ยังไม่เข้าใจว่ามันคำนวณยังไงกันแน่ เราจะมาทำตารางนี้ให้เห็นภาพกัน
+  // ถ้าเราเอาตารางอัตราภาษีมาพล็อตแบบนี้ ก็จะได้กราฟหน้าตาเป็น "ขั้นบันได" แบบนี้
+  // กติกาของ "ภาษีเงินได้บุคคลธรรมดา" ก็คือ ถ้า "รายได้สุทธิ" ของเราเข้าไปอยู่ในกล่องขั้นบันไดภาษีสีแดง ส่วนที่อยู่ในกล่องก็คือภาษีที่เราจะต้องจ่าย
+  // ซึ่ง "รายได้สุทธิ" ก็คือรายได้หลังหัก "ค่าใช้จ่าย" และ "ค่าลดหย่อน" แล้ว [สมการ]
+
   const narrativeSteps = [
     <>
       <p style={{ textAlign: 'center' }}>
-        &ldquo;
-        <span style={{ color: theme.colors.taxText }}>
-          ภาษีเงินได้บุคคลธรรมดา
-        </span>
-        &rdquo; คิดจาก &ldquo;
-        <span style={{ color: theme.colors.incomeText }}>เงินได้สุทธิ</span>
-        &rdquo;
+        <Pill color="taxText">ภาษีเงินได้บุคคลธรรมดา</Pill>
+        {' '}
+        คิดจาก
+        {' '}
+        <Pill color="incomeText">เงินได้สุทธิ</Pill>
+        {' '}
         ซึ่งคำนวณจากรายได้ของเราหลังจากหักค่าใช้จ่ายแล้ว
       </p>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <div style={{ flexGrow: 1, textAlign: 'center' }}>
-          <span style={{ color: theme.colors.incomeText }}>เงินได้สุทธิ</span>
+          <Pill color="incomeText">เงินได้สุทธิ</Pill>
         </div>
         <div>=</div>
         <div style={{ flexGrow: 1, textAlign: 'center' }}>
-          <span>รายได้</span>
+          <Pill color="incomeText">รายได้</Pill>
         </div>
         <div>−</div>
         <div style={{ flexGrow: 1, textAlign: 'center' }}>
-          <span>ค่าใช้จ่าย</span>
+          <Pill color="expenseText">ค่าใช้จ่าย</Pill>
         </div>
         <div>−</div>
         <div style={{ flexGrow: 1, textAlign: 'center' }}>
-          <span>ค่าลดหย่อน</span>
+          <Pill color="allowanceText">ค่าลดหย่อน</Pill>
         </div>
 
         {/* <div style={{ flexGrow: 1, flexBasis: 0, textAlign: "center" }}>
@@ -318,6 +325,13 @@ function App() {
 
     <>
       <ControlsContainer>
+        <p style={{ textAlign: 'center' }}>
+          ทีนี้ สมมติว่าคุณทำงานได้เงินเดือนรวมทั้งปี
+          {' '}
+          <Pill color="incomeText" bold>{salary.toLocaleString()}</Pill>
+          {' '}
+          บาท
+        </p>
         <div style={{ display: 'flex' }}>
           <label
             htmlFor="salaryinput"
@@ -358,7 +372,15 @@ function App() {
 
     <>
       <p style={{ textAlign: 'center' }}>
-        มีรายได้จากฟรีแลนซ์/ขายของด้วยหรือเปล่า?
+        และสมมติว่าคุณทำฟรีแลนซ์อีก
+        {' '}
+        <Pill color="incomeText" bold>{incomeFreelance.toLocaleString()}</Pill>
+        {' '}
+        บาท กับขายของออนไลน์ได้มาอีก
+        {' '}
+        <Pill color="incomeText" bold>{incomeMerchant.toLocaleString()}</Pill>
+        {' '}
+        บาท
       </p>
       <ControlsGrid style={{ gridTemplateColumns: '80px auto 80px' }}>
         <label style={{ flexGrow: 1 }}>
@@ -423,10 +445,12 @@ function App() {
 
     <>
       <p style={{ textAlign: 'center' }}>
-        <span style={{ color: theme.colors.expenseText }}>ค่าใช้จ่าย</span>
+        <Pill color="expenseText">ค่าใช้จ่าย</Pill>
         ที่หักได้ คิดจาก
-        <span style={{ color: theme.colors.incomeText }}>รายได้</span>
+        <Pill color="incomeText">รายได้</Pill>
         แต่ละประเภท
+        <br />
+        ซึ่งตามภาษาภาษีแล้ว...
       </p>
       <p
         style={{
@@ -450,32 +474,55 @@ function App() {
 
     <>
       <p style={{ textAlign: 'center' }}>
-        แล้วหัก
-        <span style={{ color: theme.colors.expenseText }}>ค่าใช้จ่าย</span>
-        ได้เท่าไหร่ล่ะ?
+        แล้วมีรายได้เท่านี้ จะหัก
+        <Pill color="expenseText">ค่าใช้จ่าย</Pill>
+        ได้เท่าไหร่?
       </p>
       <div
         style={{
           display: 'grid',
           gridTemplateColumns: 'auto auto',
+          alignItems: 'center',
           columnGap: '10px',
           rowGap: '10px',
         }}
       >
         <span style={{ textAlign: 'right' }}>
-          เงินเดือน
-          {' '}
-          {incomeFreelance > 0 && '+ ฟรีแลนซ์'}
+          <b>
+            เงินเดือน
+            {' '}
+            {incomeFreelance > 0 && '+ ฟรีแลนซ์'}
+          </b>
+          <br />
+          <span style={{ color: theme.colors.textSecondary }}>
+            หักได้ 50% ของรายได้
+            <br />
+            (รวมไม่เกิน 100,000 บาท)
+          </span>
         </span>
         <span>
-          หักได้ 50% ของรายได้
-          <br />
-          (ไม่เกิน 100,000 บาท)
+          →
+          {' '}
+          <Pill color="expenseText" bold>{expense40_1_2.toLocaleString()}</Pill>
+          {' '}
+          บาท
         </span>
         {incomeMerchant > 0 && (
           <>
-            <span style={{ textAlign: 'right' }}>ขายของ</span>
-            <span>หักได้อย่างน้อย 60%</span>
+            <span style={{ textAlign: 'right' }}>
+              <b>ขายของ</b>
+              <br />
+              <span style={{ color: theme.colors.textSecondary }}>
+                หักได้อย่างน้อย 60%
+              </span>
+            </span>
+            <span>
+              →
+              {' '}
+              <Pill color="expenseText" bold>{expense40_8.toLocaleString()}</Pill>
+              {' '}
+              บาท
+            </span>
           </>
         )}
       </div>
@@ -483,12 +530,10 @@ function App() {
 
     <>
       <p style={{ textAlign: 'center', marginBottom: 0 }}>
-        ดังนั้น คุณจะหัก
-        <span style={{ color: theme.colors.text }}>ค่าใช้จ่าย</span>
-        ได้รวม
+        ดังนั้น คุณจะหักค่าใช้จ่ายได้รวม
         <br />
         <b style={{ color: theme.colors.expenseText }}>
-          {Math.round(expense).toLocaleString()}
+          <Pill color="expenseText" bold>{Math.round(expense).toLocaleString()}</Pill>
         </b>
         {' '}
         บาท
@@ -504,20 +549,20 @@ function App() {
     <>
       <p style={{ textAlign: 'center' }}>
         นอกจาก
-        <span style={{ color: theme.colors.expenseText }}>ค่าใช้จ่าย</span>
+        <Pill color="expenseText">ค่าใช้จ่าย</Pill>
         แล้ว ทุกคน
         <br />
-        สามารถหัก &ldquo;
-        <span style={{ color: theme.colors.allowanceText }}>
-          ค่าลดหย่อนส่วนตัว
-        </span>
-        &rdquo;
+        สามารถหัก &ldquo;ค่าลดหย่อนส่วนตัว&rdquo;
         <br />
-        ได้ทันทีอีก 60,000 บาท!
+        ได้ทันทีอีก
+        {' '}
+        <Pill color="allowanceText" bold>60,000</Pill>
+        {' '}
+        บาท!
       </p>
       <p style={{ textAlign: 'center', marginBottom: 0 }}>
         และ
-        <span style={{ color: theme.colors.allowanceText }}>ค่าลดหย่อน</span>
+        <Pill color="allowanceText">ค่าลดหย่อน</Pill>
         ก็มาจากสิ่งอื่นๆ ได้อีก
         <br />
         เช่น การบริจาคเงิน ค่าเบี้ยประกันต่างๆ ฯลฯ
@@ -540,7 +585,7 @@ function App() {
         </div>
         <Slider
           min={60_000}
-          max={1_200_000}
+          max={income - expense}
           step={10_000}
           value={allowance}
           onAfterChange={setAllowance}
@@ -560,13 +605,11 @@ function App() {
 
     <>
       <p style={{ textAlign: 'center', marginBottom: 0 }}>
-        ดังนั้น &ldquo;
-        <span style={{ color: theme.colors.text }}>เงินได้สุทธิ</span>
-        &rdquo; ของคุณคือ
+        ดังนั้นเงินได้สุทธิของคุณคือ
         <br />
-        <b style={{ color: theme.colors.incomeText }}>
+        <Pill color="incomeText" bold>
           {Math.round(netIncome).toLocaleString()}
-        </b>
+        </Pill>
         {' '}
         บาท
       </p>
@@ -574,19 +617,23 @@ function App() {
         income={income}
         expense={expense}
         allowance={allowanceDisplay}
-        highlight={{ netIncome: true }}
+        highlight={{
+          income: true,
+          expense: true,
+          allowance: true,
+          netIncome: true,
+        }}
       />
     </>,
 
     <>
       <p style={{ textAlign: 'center', marginBottom: 0 }}>
-        เมื่อคำนวณ &ldquo;
-        <span style={{ color: theme.colors.incomeText }}>เงินได้สุทธิ</span>
-        &rdquo; ได้แล้ว
+        เมื่อคำนวณ
+        <Pill color="incomeText">เงินได้สุทธิ</Pill>
+        ได้แล้ว
         <br />
-        จะต้องนำตัวเลขที่ได้ไปเข้า &ldquo;
-        <span style={{ color: theme.colors.taxText }}>ขั้นบันไดภาษี</span>
-        &rdquo;
+        จะต้องนำตัวเลขที่ได้ไปเข้า
+        <Pill color="taxText">ขั้นบันไดภาษี</Pill>
         <br />
         เพื่อคำนวณภาษีที่จะต้องจ่าย
       </p>
@@ -594,33 +641,40 @@ function App() {
 
     <>
       <p style={{ textAlign: 'center' }}>
-        ดังนั้น
-        {' '}
-        <span style={{ color: theme.colors.text }}>ภาษีเงินได้บุคคลธรรมดา</span>
+        ดังนั้น ภาษีเงินได้บุคคลธรรมดา
         <br />
         ที่คุณจะต้องเสียคือ
         {' '}
-        <b style={{ color: theme.colors.taxText }}>
+        <Pill color="taxText" bold>
           {Math.ceil(taxFinal).toLocaleString()}
-        </b>
+        </Pill>
         {' '}
         บาท
+        <br />
+        หรือเป็นประมาณ
+        {' '}
+        <Pill color="taxText" bold>
+          {((taxFinal / income) * 100).toFixed(1)}
+          %
+        </Pill>
+        {' '}
+        ของเงินได้ทั้งปี
       </p>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <div style={{ flexGrow: 1, flexBasis: 0, textAlign: 'center' }}>
-          <small style={{ color: theme.colors.textMuted }}>รายได้</small>
+          <small style={{ color: theme.colors.incomeText }}>รายได้</small>
           <br />
-          <span style={{ color: theme.colors.textMuted }}>
+          <b>
             {income.toLocaleString()}
-          </span>
+          </b>
         </div>
         <div style={{ color: theme.colors.textMuted }}>→</div>
         <div style={{ flexGrow: 1, flexBasis: 0, textAlign: 'center' }}>
-          <small style={{ color: theme.colors.textMuted }}>เงินได้สุทธิ</small>
+          <small style={{ color: theme.colors.incomeText }}>เงินได้สุทธิ</small>
           <br />
-          <span style={{ color: theme.colors.textMuted }}>
+          <b>
             {netIncome?.toLocaleString()}
-          </span>
+          </b>
         </div>
         <div style={{ color: theme.colors.textMuted }}>→</div>
         <div style={{ flexGrow: 1, flexBasis: 0, textAlign: 'center' }}>
@@ -802,7 +856,7 @@ function App() {
         </label>
         <Slider
           min={60_000}
-          max={1_200_000}
+          max={income - expense}
           step={10_000}
           value={allowance}
           onAfterChange={setAllowance}
