@@ -28,7 +28,7 @@ const CoverPage = ({ currentNarrativeStep, setCurrentNarrativeStep }) => (
       style={{
         position: 'absolute',
         left: '50%',
-        top: 'calc(50% - 30px)',
+        top: 'calc(50% - 16px)',
         transform: 'translate(-50%, -50%)',
         borderRadius: '50%',
         backgroundColor: theme.colors.bg,
