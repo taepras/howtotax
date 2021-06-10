@@ -54,15 +54,15 @@ const GlobalStyle = createGlobalStyle`
 
   @keyframes blink-from-none {
     0% {
-      opacity: 0.2;
+      opacity: 0.4;
     }
 
     50% {
-      opacity: 1;
+      opacity: 0.8;
     }
 
     100% {
-      opacity: 0.2;
+      opacity: 0.4;
     }
   }
 
@@ -72,7 +72,7 @@ const GlobalStyle = createGlobalStyle`
     }
 
     50% {
-      opacity: 0.2;
+      opacity: 0.4;
     }
 
     100% {

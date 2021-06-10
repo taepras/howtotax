@@ -87,7 +87,7 @@ export const TaxBracketDisplay = ({
         .style('fill-opacity', 0)
         .style('stroke', theme.colors.tax)
         .style('stroke-width', 1)
-        .style('stroke-dasharray', '5, 3')
+        // .style('stroke-dasharray', '5, 3')
         .transition()
         .duration(transitionDuration)
         .attr('y', (d) => scaleIncome(d.minNetIncome))
@@ -100,7 +100,7 @@ export const TaxBracketDisplay = ({
         .attr('x2', barWidth)
         .style('stroke', theme.colors.tax)
         .style('stroke-width', 1)
-        .style('stroke-dasharray', '5, 3')
+        // .style('stroke-dasharray', '5, 3')
         .transition()
         .duration(transitionDuration)
       // .style('stroke-opacity', '0.4')
@@ -113,6 +113,10 @@ export const TaxBracketDisplay = ({
         .style('font-size', '0.75rem')
         .style('text-anchor', 'start')
         .style('dominant-baseline', 'text-before-edge')
+        .style('paint-order', 'stroke fill')
+        .style('stroke', (d) => (netIncome > d.minNetIncome ? '#000' : theme.colors.bg))
+        .style('stroke-width', 4)
+        .style('stroke-linejoin', 'round')
         .attr('x', (d) => scaleTaxRate(d.taxRate) + 5)
       // .attr('x', barWidth - 5)
         .transition()
@@ -122,12 +126,17 @@ export const TaxBracketDisplay = ({
         .style('font-weight', (d) => (netIncome > d.minNetIncome ? 'bold' : 'normal'))
         .text((d) => `เริ่มคิดที่ ${d.minNetIncome.toLocaleString()} บาท`)
         .style('fill-opacity', (d, i) => (i !== 0 && scaleIncome(d.maxNetIncome - d.minNetIncome) > 40 ? 1 : 0))
+        .style('stroke-opacity', (d, i) => (i !== 0 && scaleIncome(d.maxNetIncome - d.minNetIncome) > 40 ? 1 : 0))
         .attr('y', (d) => -scaleIncome(d.minNetIncome) + 5)
         .attr('opacity', active ? 1 : 0);
 
       bracketLineGroups.merge(bracketLineGroupsEnter)
         .select('text.bracket-min-text')
         .style('font-size', '0.75rem')
+        .style('paint-order', 'stroke fill')
+        .style('stroke', (d) => (netIncome > d.minNetIncome ? '#000' : theme.colors.bg))
+        .style('stroke-width', 4)
+        .style('stroke-linejoin', 'round')
         .attr('x', (d) => scaleTaxRate(d.taxRate) + 5)
         .transition()
         .duration(transitionDuration)
@@ -138,6 +147,7 @@ export const TaxBracketDisplay = ({
       //     ? `เริ่มคิดที่ ${numberWithCommas(d.minNetIncome)} บาท`
       //     : `${d.taxRate * 100}%`)
         .style('fill-opacity', (d, i) => (i !== 0 && scaleIncome(d.maxNetIncome - d.minNetIncome) > 40 ? 1 : 0))
+        .style('stroke-opacity', (d, i) => (i !== 0 && scaleIncome(d.maxNetIncome - d.minNetIncome) > 40 ? 1 : 0))
         .attr('y', (d) => -scaleIncome(d.minNetIncome) - 5)
         .attr('opacity', active ? 1 : 0);
     }
@@ -165,7 +175,8 @@ export const TaxBracketDisplay = ({
       </defs>
       <g id="tax-brackets" ref={taxBracketRef}>
         <g className="tax-lines" />
-        <path className="tax-stairs-camouflage" clipPath="url(#net-income-mask)" onClick={() => setPullTax(false)} />
+        {/* eslint-disable-next-line max-len */}
+        {/* <path className="tax-stairs-camouflage" clipPath="url(#net-income-mask)" onClick={() => setPullTax(false)} /> */}
         <path className="tax-stairs" clipPath="url(#net-income-mask)" onClick={() => setPullTax(!isPullTax)} />
       </g>
     </>

@@ -94,15 +94,16 @@ const ScaleReference = ({
             y={-sizeOf1000.height}
             transform="scale(1, -1)"
           />
-          {/* <rect
+          <rect
             width={sizeOf1000.width}
             height={sizeOf1000.height}
-            fill={fill}
+            fill="transparent"
+            stroke={theme.colors.bg}
             fillOpacity={0.5}
-          /> */}
+          />
         </pattern>
       </defs>
-      <rect fill="url(#bank1000-ref)" stroke="#222" ref={squareRef} />
+      <rect fill="url(#bank1000-ref)" ref={squareRef} />
       {/* <rect fill={theme.colors.income} ref={squareRef} /> */}
       <text fill={theme.colors.textMuted} alignmentBaseline="middle" textAnchor="end" x={0} ref={textRef}>
         {text}

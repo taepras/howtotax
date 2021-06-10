@@ -39,7 +39,7 @@ export const MoneyBlock = ({
   const patternRef = useRef(null);
   const strokeWidth = 1;
 
-  const fadeOp = useMemo(() => (fade ? 0.3 : 1), [fade]);
+  const fadeOp = useMemo(() => (outlined ? 0.3 : 1), [outlined]);
 
   useLayoutEffect(() => {
     if (moneyBlockRef.current) {
@@ -50,22 +50,23 @@ export const MoneyBlock = ({
 
       g.select('rect.block')
         .attr('width', barWidth)
-        .style('animation', isBlink ? 'blink-from-full 1s infinite' : 'none')
+        // .style('animation', isBlink ? 'blink-from-full 1s infinite' : 'none')
         .transition()
         .duration(transitionDuration)
-        .style('fill', outlined ? 'transparent' : fill)
+        // .style('fill', outlined ? 'transparent' : fill)
         // .attr('y', scale(offset))
         .attr('height', Math.max(0, scale(amount)))
-        .attr('opacity', fadeOp);
+        .attr('fill-opacity', fadeOp);
 
       g.select('rect.block-outline')
         .attr('width', barWidth - strokeWidth)
-        .style('animation', isBlink ? 'blink-from-full 1s infinite' : 'none')
+        // .style('animation', isBlink ? 'blink-from-full 1s infinite' : 'none')
         .transition()
         .duration(transitionDuration)
         // .attr('y', scale(offset))
         .attr('height', Math.max(0, scale(amount)) - strokeWidth)
-        .attr('stroke-opacity', (outlined ? 1 : stroke ? 0.6 : 0) * fadeOp);
+        .attr('stroke-opacity', (outlined ? 1 : stroke ? 0.6 : 0) * fadeOp)
+        .attr('fill-opacity', fadeOp);
 
       g.select('text.label')
         .text(label)
@@ -74,7 +75,7 @@ export const MoneyBlock = ({
         .attr('x', barWidth - 24)
         .style('text-anchor', 'end')
         .attr('y', -scale(amount / 2))
-        .attr('opacity', amount > 0 ? ((outlined ? 1 : 0.7) * fadeOp) : 0);
+        .attr('opacity', amount > 0 ? (1 * fadeOp) : 0);
     }
   }, [
     amount,
@@ -121,8 +122,12 @@ export const MoneyBlock = ({
         .attr('width', sizeOf1000.width)
         .attr('height', sizeOf1000.height)
         .attr('y', -sizeOf1000.height);
+
+      pattern.select('rect.color-overlay')
+        .transition().duration(500)
+        .attr('fill-opacity', outlined ? 0 : 0.7);
     }
-  }, [patternRef, sizeOf1000, barWidth, scale, amount]);
+  }, [patternRef, sizeOf1000, barWidth, scale, amount, outlined]);
 
   return (
     <>
@@ -146,15 +151,24 @@ export const MoneyBlock = ({
             <rect
               width="100%"
               height="100%"
+              fill="transparent"
+              stroke={theme.colors.bg}
+              strokeWidth={3}
+            />
+            <rect
+              className="color-overlay"
+              width="100%"
+              height="100%"
               fill={fill}
-              fillOpacity={0.5}
+              // fill="transparent"
+              // fillOpacity={outlined ? 0 : 0.7}
             />
           </pattern>
         </defs>
         <rect
           className="block"
           width={barWidth}
-          fill={outlined ? 'transparent' : `url(#bank1000-${id})`}
+          fill={`url(#bank1000-${id})`}
           // fill={outlined ? 'transparent' : fill}
           // opacity={fadeOp}
           // stroke={outlined ? fill : theme.colors.text}
@@ -182,10 +196,13 @@ export const MoneyBlock = ({
           className="label"
           style={{
             fill: outlined ? fill : theme.colors.white,
-            fontSize: '0.75rem',
+            fontSize: '0.875rem',
             alignmentBaseline: 'middle',
             textAnchor: 'middle',
-            // fillOpacity: (outlined ? 1 : 0.6) * fadeOp
+            paintOrder: 'stroke fill',
+            stroke: outlined ? theme.colors.bg : '#000',
+            strokeWidth: 4,
+            strokeLinejoin: 'round',
           }}
         >
           {label}
