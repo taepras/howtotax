@@ -39,7 +39,7 @@ export const MoneyBlock = ({
   const patternRef = useRef(null);
   const strokeWidth = 1;
 
-  const fadeOp = useMemo(() => (outlined ? 0.3 : 1), [outlined]);
+  const fadeOp = useMemo(() => (outlined ? 0.2 : 1), [outlined]);
 
   useLayoutEffect(() => {
     if (moneyBlockRef.current) {
@@ -50,7 +50,8 @@ export const MoneyBlock = ({
 
       g.select('rect.block')
         .attr('width', barWidth)
-        // .style('animation', isBlink ? 'blink-from-full 1s infinite' : 'none')
+        .style('animation', isBlink ? 'blink-from-full 0.5s infinite' : 'none')
+        .style('animation-timing-function', 'linear')
         .transition()
         .duration(transitionDuration)
         // .style('fill', outlined ? 'transparent' : fill)
@@ -74,6 +75,8 @@ export const MoneyBlock = ({
         // .attr('x', barWidth / 2)
         .attr('x', barWidth - 24)
         .style('text-anchor', 'end')
+        .style('fill', outlined ? fill : theme.colors.white)
+        .style('stroke', outlined ? theme.colors.bg : '#000')
         .attr('y', -scale(amount / 2))
         .attr('opacity', amount > 0 ? (1 * fadeOp) : 0);
     }
@@ -195,12 +198,12 @@ export const MoneyBlock = ({
         <text
           className="label"
           style={{
-            fill: outlined ? fill : theme.colors.white,
+            // fill: outlined ? fill : theme.colors.white,
+            // stroke: outlined ? theme.colors.bg : '#000',
             fontSize: '0.875rem',
             alignmentBaseline: 'middle',
             textAnchor: 'middle',
             paintOrder: 'stroke fill',
-            stroke: outlined ? theme.colors.bg : '#000',
             strokeWidth: 4,
             strokeLinejoin: 'round',
           }}

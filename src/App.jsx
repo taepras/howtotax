@@ -223,17 +223,18 @@ function App() {
   const [incomeFreelance, setIncomeFreelance] = useState(50_000);
   const [incomeMerchant, setIncomeMerchant] = useState(50_000);
   const [enableIncome, setEnableIncome] = useState(false);
+  const [enableIncomeExtra, setEnableIncomeExtra] = useState(false);
   const salaryDisplay = useMemo(
     () => (enableIncome ? salary : 0),
     [enableIncome, salary],
   );
   const incomeFreelanceDisplay = useMemo(
-    () => (enableIncome ? incomeFreelance : 0),
-    [enableIncome, incomeFreelance],
+    () => (enableIncomeExtra ? incomeFreelance : 0),
+    [enableIncomeExtra, incomeFreelance],
   );
   const incomeMerchantDisplay = useMemo(
-    () => (enableIncome ? incomeMerchant : 0),
-    [enableIncome, incomeMerchant],
+    () => (enableIncomeExtra ? incomeMerchant : 0),
+    [enableIncomeExtra, incomeMerchant],
   );
   const income = useMemo(
     () => (+salaryDisplay + +incomeFreelanceDisplay + +incomeMerchantDisplay),
@@ -895,6 +896,12 @@ function App() {
           <b>
             {Math.ceil(taxFinal).toLocaleString()}
             {' '}
+            <small>
+              (
+              {((taxFinal / income) * 100).toFixed(1)}
+              %)
+
+            </small>
           </b>
         </div>
       </div>
@@ -904,6 +911,7 @@ function App() {
 
   useEffect(() => {
     setEnableIncome(currentNarrativeStep >= 1);
+    setEnableIncomeExtra(currentNarrativeStep >= 2);
     setEnableExpense(currentNarrativeStep >= 4);
     setGroupIncome(currentNarrativeStep >= 5);
     setShowBreakdown(!(currentNarrativeStep >= 6));
