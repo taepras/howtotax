@@ -19,14 +19,13 @@ export const TaxBracketDisplay = ({
   // netIncomeMask,
   enableTransition = true,
   active = false,
-  transitionTime = 500,
   isPullTax = false,
   setPullTax = () => { },
   forceBlink = false,
 }) => {
   const transitionDuration = useMemo(
-    () => (enableTransition ? transitionTime : 0),
-    [enableTransition, transitionTime],
+    () => (enableTransition ? theme.transitionTime : 0),
+    [enableTransition],
   );
 
   const taxBracketRef = useRef(null);
@@ -93,7 +92,7 @@ export const TaxBracketDisplay = ({
         .duration(transitionDuration)
         .attr('y', (d) => scaleIncome(d.minNetIncome))
         .attr('height', (d) => scaleIncome(d.maxNetIncome - d.minNetIncome))
-        .attr('opacity', active ? 1 : 0.3);
+        .attr('opacity', active ? 1 : 0.4);
 
       bracketLineGroups.merge(bracketLineGroupsEnter)
         .select('line')

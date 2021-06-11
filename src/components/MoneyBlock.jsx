@@ -26,13 +26,12 @@ export const MoneyBlock = ({
   outlined = false,
   enableTransition = true,
   fade = false,
-  transitionTime = 500,
   stroke,
   id = 0,
 }) => {
   const transitionDuration = useMemo(
-    () => (enableTransition ? transitionTime : 0),
-    [enableTransition, transitionTime],
+    () => (enableTransition ? theme.transitionTime : 0),
+    [enableTransition],
   );
 
   const moneyBlockRef = useRef(null);
