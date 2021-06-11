@@ -22,6 +22,7 @@ export const TaxBracketDisplay = ({
   transitionTime = 500,
   isPullTax = false,
   setPullTax = () => { },
+  forceBlink = false,
 }) => {
   const transitionDuration = useMemo(
     () => (enableTransition ? transitionTime : 0),
@@ -49,7 +50,7 @@ export const TaxBracketDisplay = ({
       mask.attr('width', barWidth)
         .transition().duration(transitionDuration)
       // .style('fill', '#08f')
-        .attr('height', Math.max(0, scaleIncome(netIncome)));
+        .attr('height', Math.max(0, scaleIncome(forceBlink ? 10_000_000 : netIncome)));
 
       g.select('path.tax-stairs-camouflage')
         .attr('fill', theme.colors.bg)
@@ -92,7 +93,7 @@ export const TaxBracketDisplay = ({
         .duration(transitionDuration)
         .attr('y', (d) => scaleIncome(d.minNetIncome))
         .attr('height', (d) => scaleIncome(d.maxNetIncome - d.minNetIncome))
-        .attr('opacity', active ? 1 : 0);
+        .attr('opacity', active ? 1 : 0.3);
 
       bracketLineGroups.merge(bracketLineGroupsEnter)
         .select('line')
@@ -106,7 +107,7 @@ export const TaxBracketDisplay = ({
       // .style('stroke-opacity', '0.4')
         .attr('y1', (d) => Math.round(scaleIncome(d.maxNetIncome)))
         .attr('y2', (d) => Math.round(scaleIncome(d.maxNetIncome)))
-        .attr('opacity', active ? 1 : 0);
+        .attr('opacity', active ? 1 : 0.3);
 
       bracketLineGroups.merge(bracketLineGroupsEnter)
         .select('text.bracket-rate-text')
@@ -164,6 +165,7 @@ export const TaxBracketDisplay = ({
     generateTaxBracketsPathD,
     isPullTax,
     transitionDuration,
+    forceBlink,
   ]);
 
   return (

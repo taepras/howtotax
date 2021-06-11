@@ -13,6 +13,12 @@ const Step = styled.div`
   right: 0;
   bottom: 0;
 
+  /* ${(props) => props.unfixSize && css`
+    @media (min-width: 480px) {
+      position: static;
+    }
+  `} */
+
   ${(props) => {
     switch (props.status) {
       case -1:
