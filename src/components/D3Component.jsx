@@ -52,7 +52,6 @@ export const D3Component = ({
   showBrackets = true,
   isActivateTax = true,
   setPullTax = (x) => { },
-  transitionTime = 1000,
   enableTransition = true,
   isFocusIncome = true,
   isBlink = {},
@@ -74,8 +73,8 @@ export const D3Component = ({
   });
 
   const transitionDuration = useMemo(
-    () => (enableTransition ? transitionTime : 0),
-    [enableTransition, transitionTime],
+    () => (enableTransition ? theme.transitionTime : 0),
+    [enableTransition],
   );
 
   const d3Container = useRef(null);

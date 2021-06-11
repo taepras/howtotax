@@ -1056,7 +1056,7 @@ function App() {
             // slowTransition={currentNarrativeStep <= 4}
           />
           <TaxTableDisplay show={currentNarrativeStep <= 0}>
-            <img src={`${process.env.PUBLIC_URL}/table.png`} alt="ตารางอัตราภาษีเงินได้บุคคลธรรมดา" style={{ width: '100%' }} />
+            <img src={`${process.env.PUBLIC_URL}/table.png`} alt="ตารางอัตราภาษีเงินได้บุคคลธรรมดา" style={{ width: '100%', maxWidth: 500 }} />
           </TaxTableDisplay>
         </ChartContainer>
         <SideContainer>

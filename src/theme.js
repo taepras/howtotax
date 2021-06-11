@@ -14,6 +14,7 @@ export const theme = {
     taxText: '#DA0910',
     white: '#ffffff',
   },
+  transitionTime: 1000,
 };
 
 // export const theme = {
