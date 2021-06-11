@@ -26,6 +26,9 @@ const EndingPage = ({ currentNarrativeStep, setCurrentNarrativeStep, narrativeSt
       เว็บไซต์
       {' '}
       <a href="https://www.rd.go.th/548.html">กรมสรรพากร</a>
+      {' '}
+      <br />
+      หรือแหล่งข้อมูลเกี่ยวกับภาษีอื่นๆ
     </p>
     <p>
       แต่ถ้าชอบ visualization นี้
@@ -99,15 +102,17 @@ const EndingPage = ({ currentNarrativeStep, setCurrentNarrativeStep, narrativeSt
       </Button>
     </div>
 
-    <p style={{ marginTop: '30px', color: theme.colors.textMuted }}>
-      Tax, visualized. was created by
-      <br />
+    <p style={{ marginTop: '30px', color: theme.colors.textSecondary, fontSize: '0.875rem' }}>
       <a
         href="https://taepras.com"
-        style={{ color: theme.colors.textMuted }}
+        style={{ color: theme.colors.textSecondary }}
       >
-        Tae Prasongpongchai
+        <img src={`${process.env.PUBLIC_URL}/logo_initials.svg`} alt="tp_" style={{ width: 64 }} />
+        <br />
+        taepras.com
       </a>
+      <br />
+      ธนวิชญ์ ประสงค์พงษ์ชัย
     </p>
   </Step>
 );
