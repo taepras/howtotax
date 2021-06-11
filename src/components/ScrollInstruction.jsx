@@ -36,6 +36,10 @@ const ScrollInstruction = styled.div`
     opacity: ${(props) => (props.visible ? 1 : 0)};
     
     transition: all 0.2s;
+
+    @media (min-width: 480px) {
+      display: none;
+    }
 `;
 
 // const ScrollInstruction = ({ ...props }) =>

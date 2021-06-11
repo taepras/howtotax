@@ -43,19 +43,21 @@ export const D3Component = ({
   allowance,
   // taxBrackets,
   padding = {
-    left: 35,
-    right: 0,
+    left: 64,
+    right: 16,
     top: 0,
-    bottom: 30,
+    bottom: 48,
   },
   isPullTax = false,
   showBrackets = true,
   isActivateTax = true,
   setPullTax = (x) => { },
-  transitionTime = 500,
+  transitionTime = 1000,
   enableTransition = true,
   isFocusIncome = true,
   isBlink = {},
+  showFullScale = false,
+  forceBlinkTax = false,
 }) => {
   const {
     observe, unobserve, width, height, entry,
@@ -89,7 +91,7 @@ export const D3Component = ({
   /* eslint-disable-next-line react-hooks/exhaustive-deps */
   const scaleIncome = useCallback(
     d3.scaleLinear()
-      .domain([0, Math.max(300_000, income * 1.4)])
+      .domain([0, showFullScale ? 6_000_000 : Math.max(300_000, income * 1.4)])
       .range([0, height - padding.bottom]),
     [height, income, padding],
   );
@@ -260,13 +262,25 @@ export const D3Component = ({
                 scaleIncome={scaleIncome}
                 scaleTaxRate={scaleTaxRate}
                 showTax={isActivateTax}
-                blinkTax={isBlink.tax}
+                blinkTax={isBlink.tax || forceBlinkTax}
+                forceBlink={forceBlinkTax}
                 active={showBrackets}
                 netIncome={netIncome}
               />
 
               <g className="axis axis-income" />
               <g className="axis axis-tax-rate" />
+              <g transform={`translate(${0},${height / 2}) rotate(90)`}>
+                <text fill={theme.colors.text} fontSize={14} textAnchor="middle" dominantBaseline="baseline" y={-48}>
+                  เงินได้
+                </text>
+              </g>
+              <g transform={`translate(${barWidth / 2},${0})`}>
+                <text fill={theme.colors.text} fontSize={14} textAnchor="middle" dominantBaseline="hanging" y={24} opacity={showBrackets ? 1 : 0}>
+                  อัตราภาษี
+                </text>
+              </g>
+
               <line
                 className="axis axis-tax-blank"
                 x1={0}

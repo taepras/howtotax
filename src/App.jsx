@@ -55,8 +55,10 @@ const ContentContainer = styled.div`
   flex-grow: 1;
   position: relative;
 
+  transition: min-height 0.3s;
+
   @media (min-width: 480px) {
-    min-height: 240px;
+    min-height: ${(props) => (props.taller ? '440px' : '240px')};
     flex-grow: 0;
   }
 `;
@@ -114,6 +116,20 @@ const InputGroup = styled.div`
   /* margin-bottom: 10px; */
   display: flex;
   flex-direction: column;
+`;
+
+const TaxTableDisplay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${theme.colors.bg};
+  transition: opacity 0.3s;
+  opacity: ${(props) => (props.show ? 1 : 0)};
 `;
 
 function NetIncomeEquation({
@@ -282,6 +298,7 @@ function App() {
   const [showBrackets, setShowBrackets] = useState(false);
   const [showBreakdown, setShowBreakdown] = useState(true);
   const [showDragInstruction, setShowDragInstruction] = useState(true);
+  const [showFullScale, setShowFullScale] = useState(false);
 
   // หลายคนอาจจะเคยเห็นตาราง "อัตราภาษีเงินได้บุคคลธรรมดา" หน้าตาแบบนี้ แต่ยังไม่เข้าใจว่ามันคำนวณยังไงกันแน่ เราจะมาทำตารางนี้ให้เห็นภาพกัน
   // ถ้าเราเอาตารางอัตราภาษีมาพล็อตแบบนี้ ก็จะได้กราฟหน้าตาเป็น "ขั้นบันได" แบบนี้
@@ -291,13 +308,70 @@ function App() {
   const narrativeSteps = [
     <>
       <p style={{ textAlign: 'center' }}>
+        หลายคนอาจจะเคยเห็นตาราง
+        <br />
+        <Pill color="taxText">อัตราภาษีเงินได้บุคคลธรรมดา</Pill>
+        {' '}
+        หน้าตาแบบนี้
+        <br />
+        แต่ยังไม่เข้าใจว่ามันคำนวณยังไงกันแน่
+        <br />
+        เราจะมาทำตารางนี้ให้เห็นภาพกัน
+      </p>
+    </>,
+
+    <>
+      <p style={{ textAlign: 'center' }}>
+        ถ้าเราเอาตารางอัตราภาษีที่ว่ามาพล็อตระหว่าง
+        <br />
+        <Pill color="incomeText">เงินได้สุทธิ</Pill>
+        {' '}
+        และ
+        {' '}
+        <Pill color="taxText">อัตราภาษี</Pill>
+      </p>
+      <p style={{ textAlign: 'center' }}>
+        ก็จะได้กราฟหน้าตาเป็น &ldquo;ขั้นบันได&rdquo; แบบนี้
+        <br />
+        {' '}
+        ไล่ไปตั้งแต่เงินได้สุทธิบาทแรก (ภาษี 0%)
+        {' '}
+        <br />
+        ไปถึงบาทที่ 5,000,000 ขึ้นไป (ภาษี 35%)
+      </p>
+    </>,
+
+    <>
+      <p style={{ textAlign: 'center' }}>
+        กติกาของ
+        {' '}
         <Pill color="taxText">ภาษีเงินได้บุคคลธรรมดา</Pill>
         {' '}
-        คิดจาก
+        ก็คือ
+        <br />
+        ถ้า
         {' '}
         <Pill color="incomeText">เงินได้สุทธิ</Pill>
         {' '}
-        ซึ่งคำนวณจากรายได้ของเราหลังจากหักค่าใช้จ่ายแล้ว
+        ของเราเข้าไปอยู่ในกล่องขั้นบันไดภาษีสีแดงนี้
+        {' '}
+        ส่วนที่อยู่ในกล่อง
+        <br />
+        ก็คือภาษีที่เราจะต้องจ่าย
+      </p>
+    </>,
+
+    <>
+      <p style={{ textAlign: 'center' }}>
+        ซึ่ง
+        <Pill color="incomeText">เงินได้สุทธิ</Pill>
+        ก็คือรายได้ของเรา
+        <br />
+        หลังจากหัก
+        <Pill color="expenseText">ค่าใช้จ่าย</Pill>
+        และ
+        <Pill color="allowanceText">ค่าลดหย่อน</Pill>
+        แล้วนั่นเอง
       </p>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <div style={{ flexGrow: 1, textAlign: 'center' }}>
@@ -690,7 +764,7 @@ function App() {
     </>,
 
     <ScrollBox
-      style={{ height: '500px' }}
+      // style={{ height: '500px' }}
       onScroll={() => {
         setShowDragInstruction(false);
       }}
@@ -812,6 +886,8 @@ function App() {
       <ControlsGrid>
         <label style={{ flexGrow: 1 }}>
           <small>คิดจากเงินเดือน + ฟรีแลนซ์</small>
+          <br />
+          <small style={{ color: theme.colors.textSecondary }}>(หักได้ 50% ไม่เกิน 100,000 บาท)</small>
         </label>
         <div style={{ gridColumn: '2 / -1', textAlign: 'right' }}>
           <small>
@@ -825,6 +901,8 @@ function App() {
 
         <label style={{ flexGrow: 1 }}>
           <small>คิดจากขายของ</small>
+          <br />
+          <small style={{ color: theme.colors.textSecondary }}>(หักได้อย่างน้อย 60%)</small>
         </label>
         <div style={{ gridColumn: '2 / -1', textAlign: 'right' }}>
           <small>
@@ -910,14 +988,16 @@ function App() {
   ];
 
   useEffect(() => {
-    setEnableIncome(currentNarrativeStep >= 1);
-    setEnableIncomeExtra(currentNarrativeStep >= 2);
-    setEnableExpense(currentNarrativeStep >= 4);
-    setGroupIncome(currentNarrativeStep >= 5);
-    setShowBreakdown(!(currentNarrativeStep >= 6));
-    setTimeout(() => setEnableAllowance(currentNarrativeStep >= 6), 400);
-    setShowBrackets(currentNarrativeStep >= 9);
-    setActivateTax(currentNarrativeStep >= 10);
+    console.log(currentNarrativeStep);
+    setEnableIncome(currentNarrativeStep >= 4);
+    setEnableIncomeExtra(currentNarrativeStep >= 5);
+    setEnableExpense(currentNarrativeStep >= 7);
+    setGroupIncome(currentNarrativeStep >= 8);
+    setShowBreakdown(!(currentNarrativeStep >= 9));
+    setTimeout(() => setEnableAllowance(currentNarrativeStep >= 9), 800);
+    setShowBrackets(currentNarrativeStep >= 12 || currentNarrativeStep <= 3);
+    setActivateTax(currentNarrativeStep >= 13 || currentNarrativeStep === 2 || currentNarrativeStep === 3);
+    // setShowFullScale(currentNarrativeStep === 1 || currentNarrativeStep === 2);
   }, [currentNarrativeStep, enableAllowance, income, expense]);
 
   return (
@@ -965,19 +1045,27 @@ function App() {
             isActivateTax={isActivateTax}
             showBrackets={showBrackets}
             isBlink={{
-              tax: currentNarrativeStep === 10,
-              income: currentNarrativeStep === 8,
-              // expense: currentNarrativeStep == 2,
-              // allowance: currentNarrativeStep == 3,
+              tax: currentNarrativeStep === 13 || currentNarrativeStep === 2 || currentNarrativeStep === 3,
+              income: currentNarrativeStep === 11,
+              // expense: currentNarrativeStep == 5,
+              // allowance: currentNarrativeStep == 6,
             }}
-            isFocusIncome={currentNarrativeStep >= 8}
+            forceBlinkTax={currentNarrativeStep === 2 || currentNarrativeStep === 3}
+            isFocusIncome={currentNarrativeStep >= 11}
+            showFullScale={currentNarrativeStep <= 3}
+            // slowTransition={currentNarrativeStep <= 4}
           />
+          <TaxTableDisplay show={currentNarrativeStep <= 0}>
+            <img src={`${process.env.PUBLIC_URL}/table.png`} alt="ตารางอัตราภาษีเงินได้บุคคลธรรมดา" style={{ width: '100%' }} />
+          </TaxTableDisplay>
         </ChartContainer>
         <SideContainer>
-          <ContentContainer>
+          <ContentContainer taller={currentNarrativeStep === 14}>
             {narrativeSteps.map((step, i) => (
               <>
-                <Step status={Math.sign(i - currentNarrativeStep)}>{step}</Step>
+                <Step status={Math.sign(i - currentNarrativeStep)}>
+                  {step}
+                </Step>
               </>
             ))}
           </ContentContainer>

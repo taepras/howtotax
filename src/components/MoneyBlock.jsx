@@ -61,7 +61,7 @@ export const MoneyBlock = ({
 
       g.select('rect.block-outline')
         .attr('width', barWidth - strokeWidth)
-        // .style('animation', isBlink ? 'blink-from-full 1s infinite' : 'none')
+        .style('animation', isBlink ? 'blink-from-full 1s infinite' : 'none')
         .transition()
         .duration(transitionDuration)
         // .attr('y', scale(offset))
@@ -73,7 +73,7 @@ export const MoneyBlock = ({
         .text(label)
         .transition().duration(transitionDuration)
         // .attr('x', barWidth / 2)
-        .attr('x', barWidth - 24)
+        .attr('x', barWidth - 12)
         .style('text-anchor', 'end')
         .style('fill', outlined ? fill : theme.colors.white)
         .style('stroke', outlined ? theme.colors.bg : '#000')
