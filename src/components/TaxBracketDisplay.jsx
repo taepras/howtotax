@@ -100,7 +100,7 @@ export const TaxBracketDisplay = ({
         .attr('x2', barWidth)
         .style('stroke', theme.colors.tax)
         .style('stroke-width', 2)
-        // .style('stroke-dasharray', '5, 3')
+        .style('stroke-dasharray', '5, 3')
         .transition()
         .duration(transitionDuration)
       // .style('stroke-opacity', '0.4')

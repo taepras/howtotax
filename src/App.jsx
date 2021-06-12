@@ -58,8 +58,14 @@ const ContentContainer = styled.div`
   transition: min-height 0.3s;
 
   @media (min-width: 480px) {
-    min-height: ${(props) => (props.taller ? '440px' : '240px')};
+    min-height: ${(props) => (props.taller ? '460px' : '240px')};
     flex-grow: 0;
+  }
+`;
+
+const VisibleNonMobile = styled.span`
+  @media (min-width: 480px) {
+    display: none;
   }
 `;
 
@@ -308,7 +314,7 @@ function App() {
   const narrativeSteps = [
     <>
       <p style={{ textAlign: 'center' }}>
-        หลายคนอาจจะเคยเห็นตาราง
+        เราอาจจะเคยเห็นตาราง
         <br />
         <Pill color="taxText">อัตราภาษีเงินได้บุคคลธรรมดา</Pill>
         {' '}
@@ -322,19 +328,18 @@ function App() {
 
     <>
       <p style={{ textAlign: 'center' }}>
-        ถ้าเราเอาตารางอัตราภาษีที่ว่ามาพล็อตระหว่าง
+        ถ้าเราเอาตารางอัตราภาษีนั้นมาพล็อตระหว่าง
         <br />
         <Pill color="incomeText">เงินได้สุทธิ</Pill>
         {' '}
         และ
         {' '}
         <Pill color="taxText">อัตราภาษี</Pill>
+        {' '}
+        ก็จะได้กราฟแบบนี้
       </p>
       <p style={{ textAlign: 'center' }}>
-        ก็จะได้กราฟหน้าตาเป็น &ldquo;ขั้นบันได&rdquo; แบบนี้
-        <br />
-        {' '}
-        ไล่ไปตั้งแต่เงินได้สุทธิบาทแรก (ภาษี 0%)
+        ไล่ตั้งแต่เงินได้สุทธิบาทแรก (ภาษี 0%)
         {' '}
         <br />
         ไปถึงบาทที่ 5,000,000 ขึ้นไป (ภาษี 35%)
@@ -520,12 +525,19 @@ function App() {
 
     <>
       <p style={{ textAlign: 'center' }}>
-        <Pill color="expenseText">ค่าใช้จ่าย</Pill>
-        ที่หักได้ คิดจาก
+        หลังคิด
         <Pill color="incomeText">รายได้</Pill>
-        แต่ละประเภท
+        แล้ว ก็นำมาหัก
+        <Pill color="expenseText">ค่าใช้จ่าย</Pill>
+      </p>
+      <p style={{ textAlign: 'center' }}>
+        โดยที่
+        {' '}
+        <Pill color="expenseText">ค่าใช้จ่าย</Pill>
+        ที่หักได้ คิดแยกตาม
+        <Pill color="incomeText">รายได้</Pill>
         <br />
-        ซึ่งตามภาษาภาษีแล้ว...
+        แต่ละประเภท ซึ่งตามภาษาภาษีแล้ว...
       </p>
       <p
         style={{
@@ -535,12 +547,12 @@ function App() {
           marginBottom: 0,
         }}
       >
-        <span style={{ textAlign: 'right' }}>เงินเดือน</span>
-        <span>นับเป็น &ldquo;เงินได้ประเภทที่ 1&rdquo;</span>
-        <span style={{ textAlign: 'right' }}>เงินจากฟรีแลนซ์</span>
-        <span>นับเป็น &ldquo;เงินได้ประเภทที่ 2&rdquo;</span>
-        <span style={{ textAlign: 'right' }}>เงินจากขายของ</span>
-        <span>นับเป็น &ldquo;เงินได้ประเภทที่ 8&rdquo;</span>
+        <small style={{ textAlign: 'right' }}>เงินเดือน</small>
+        <small>นับเป็น &ldquo;เงินได้ประเภทที่ 1&rdquo;</small>
+        <small style={{ textAlign: 'right' }}>เงินจากฟรีแลนซ์</small>
+        <small>นับเป็น &ldquo;เงินได้ประเภทที่ 2&rdquo;</small>
+        <small style={{ textAlign: 'right' }}>เงินจากขายของ</small>
+        <small>นับเป็น &ldquo;เงินได้ประเภทที่ 8&rdquo;</small>
       </p>
       {/* <p style={{ textAlign: "center", color: theme.colors.textMuted }}>
         *ตามประมวลรัษฎากร มาตรา 40
@@ -605,11 +617,19 @@ function App() {
 
     <>
       <p style={{ textAlign: 'center', marginBottom: 0 }}>
-        ดังนั้น คุณจะหักค่าใช้จ่ายได้รวม
+        ดังนั้นก็จะหักค่าใช้จ่ายได้รวม
         <br />
         <b style={{ color: theme.colors.expenseText }}>
           <Pill color="expenseText" bold>{Math.round(expense).toLocaleString()}</Pill>
         </b>
+        {' '}
+        บาท
+        {' '}
+        เหลือเป็นเงินได้หลัง
+        <br />
+        หักค่าใช้จ่าย
+        {' '}
+        <Pill color="incomeText" bold>{expense.toLocaleString()}</Pill>
         {' '}
         บาท
       </p>
@@ -623,29 +643,34 @@ function App() {
 
     <>
       <p style={{ textAlign: 'center' }}>
-        นอกจาก
+        และนอกจาก
         <Pill color="expenseText">ค่าใช้จ่าย</Pill>
-        แล้ว ทุกคน
+        แล้ว
         <br />
-        สามารถหัก &ldquo;ค่าลดหย่อนส่วนตัว&rdquo;
+        ก็ยังสามารถหัก
+        <Pill color="allowanceText">ค่าลดหย่อน</Pill>
+        {' '}
+        ได้อีก
+      </p>
+      <p style={{ textAlign: 'center' }}>
+        ซึ่งทุกคนสามารถหัก &ldquo;ค่าลดหย่อนส่วนตัว&rdquo;
         <br />
-        ได้ทันทีอีก
+        ได้ทันที
         {' '}
         <Pill color="allowanceText" bold>60,000</Pill>
         {' '}
         บาท!
       </p>
-      <p style={{ textAlign: 'center', marginBottom: 0 }}>
-        และ
-        <Pill color="allowanceText">ค่าลดหย่อน</Pill>
-        ก็มาจากสิ่งอื่นๆ ได้อีก
-        <br />
-        เช่น การบริจาคเงิน ค่าเบี้ยประกันต่างๆ ฯลฯ
-      </p>
     </>,
 
     <>
-      {/* <p>ลดหย่อนส่วนตัวได้ 60,000 บาท</p> */}
+      <p style={{ textAlign: 'center' }}>
+        นอกจากนั้น
+        ก็ยัง
+        <Pill color="allowanceText">ลดหย่อน</Pill>
+        จากอย่างอื่นได้อีก
+        เช่น การบริจาคเงิน ค่าเบี้ยประกันต่างๆ ฯลฯ
+      </p>
       <ControlsContainer>
         <div style={{ display: 'flex' }}>
           <label style={{ flexGrow: 1 }}>ค่าลดหย่อน</label>
@@ -667,9 +692,9 @@ function App() {
           color={theme.colors.allowance}
         />
       </ControlsContainer>
-      <small style={{ marginLeft: 'auto', color: theme.colors.textMuted }}>
+      {/* <small style={{ marginLeft: 'auto', color: theme.colors.textMuted }}>
         ลดหย่อนส่วนตัวได้ 60,000 บาท
-      </small>
+      </small> */}
       <NetIncomeEquation
         income={income}
         expense={expense}
@@ -680,8 +705,17 @@ function App() {
 
     <>
       <p style={{ textAlign: 'center', marginBottom: 0 }}>
-        ดังนั้นเงินได้สุทธิของคุณคือ
+        ดังนั้น เมื่อคิดจาก
         <br />
+        <Pill color="incomeText">รายได้</Pill>
+        {' '}
+        <Pill color="expenseText">ค่าใช้จ่าย</Pill>
+        {' '}
+        <Pill color="allowanceText">และค่าลดหย่อน</Pill>
+        ของคุณ
+        <br />
+        เงินได้สุทธิของคุณก็คือ
+        {' '}
         <Pill color="incomeText" bold>
           {Math.round(netIncome).toLocaleString()}
         </Pill>
@@ -702,15 +736,19 @@ function App() {
     </>,
 
     <>
-      <p style={{ textAlign: 'center', marginBottom: 0 }}>
+      <p style={{ textAlign: 'center' }}>
         เมื่อคำนวณ
         <Pill color="incomeText">เงินได้สุทธิ</Pill>
         ได้แล้ว
         <br />
-        จะต้องนำตัวเลขที่ได้ไปเข้า
-        <Pill color="taxText">ขั้นบันไดภาษี</Pill>
+        ก็กลับมาดูว่าเงินได้สุทธิของเราล้ำเข้าไป
         <br />
-        เพื่อคำนวณภาษีที่จะต้องจ่าย
+        ในกล่อง
+        <Pill color="taxText">ขั้นบันไดภาษี</Pill>
+        ทางซ้ายแค่ไหน
+      </p>
+      <p style={{ textAlign: 'center' }}>
+        ส่วนที่ล้ำเข้าไปก็คือภาษีที่จะต้องจ่าย
       </p>
     </>,
 
@@ -726,7 +764,7 @@ function App() {
         {' '}
         บาท
         <br />
-        หรือเป็นประมาณ
+        หรือประมาณ
         {' '}
         <Pill color="taxText" bold>
           {((taxFinal / income) * 100).toFixed(1)}
@@ -770,8 +808,14 @@ function App() {
       }}
     >
       <ScrollInstruction visible={showDragInstruction} />
-      <p style={{ marginBottom: '0.5rem' }}>
-        <b>ลองปรับตัวเลขดู</b>
+      <p style={{ textAlign: 'center' }}>
+        ลองปรับตัวเลขคร่าวๆ ให้ตรงกับข้อมูลของคุณ
+        <VisibleNonMobile>
+          <br />
+          (เลื่อนขึ้นเพื่อดูข้อมูลช่องอื่นๆ)
+        </VisibleNonMobile>
+        <br />
+        <small style={{ color: theme.colors.textSecondary }}>* เว็บไซต์นี้ไม่มีการเก็บข้อมูลตัวเลขที่คุณกรอก</small>
       </p>
       <div
         style={{
@@ -988,7 +1032,6 @@ function App() {
   ];
 
   useEffect(() => {
-    console.log(currentNarrativeStep);
     setEnableIncome(currentNarrativeStep >= 4);
     setEnableIncomeExtra(currentNarrativeStep >= 5);
     setEnableExpense(currentNarrativeStep >= 7);
@@ -997,7 +1040,7 @@ function App() {
     setTimeout(() => setEnableAllowance(currentNarrativeStep >= 9), 800);
     setShowBrackets(currentNarrativeStep >= 12 || currentNarrativeStep <= 3);
     setActivateTax(currentNarrativeStep >= 13 || currentNarrativeStep === 2 || currentNarrativeStep === 3);
-    // setShowFullScale(currentNarrativeStep === 1 || currentNarrativeStep === 2);
+    setTimeout(() => setShowFullScale(currentNarrativeStep >= 1 && currentNarrativeStep <= 3), 800);
   }, [currentNarrativeStep, enableAllowance, income, expense]);
 
   return (
@@ -1052,7 +1095,7 @@ function App() {
             }}
             forceBlinkTax={currentNarrativeStep === 2 || currentNarrativeStep === 3}
             isFocusIncome={currentNarrativeStep >= 11}
-            showFullScale={currentNarrativeStep <= 3}
+            showFullScale={showFullScale}
             // slowTransition={currentNarrativeStep <= 4}
           />
           <TaxTableDisplay show={currentNarrativeStep <= 0}>
