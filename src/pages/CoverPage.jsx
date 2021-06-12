@@ -53,9 +53,9 @@ const CoverPage = ({ currentNarrativeStep, setCurrentNarrativeStep }) => (
         แบบเห็นภาพ
       </h1>
       <p>
-        คำนวณภาษียากจัง!? มาลองคิดภาษี
+        ภาษีคิดมายังไง? คำนวณภาษียากจัง?
         <br />
-        แบบคร่าวๆ สไตล์มือใหม่หัดทำภาษี
+        มาลองคิดภาษีแบบ &ldquo;เห็นภาพ&rdquo;
         <br />
         ผ่าน data visualization กัน!
       </p>

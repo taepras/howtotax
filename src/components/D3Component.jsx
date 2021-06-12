@@ -271,12 +271,12 @@ export const D3Component = ({
               <g className="axis axis-tax-rate" />
               <g transform={`translate(${0},${height / 2}) rotate(90)`}>
                 <text fill={theme.colors.text} fontSize={14} textAnchor="middle" dominantBaseline="baseline" y={-48}>
-                  เงินได้
+                  เงินได้ →
                 </text>
               </g>
               <g transform={`translate(${barWidth / 2},${0})`}>
                 <text fill={theme.colors.text} fontSize={14} textAnchor="middle" dominantBaseline="hanging" y={24} opacity={showBrackets ? 1 : 0}>
-                  อัตราภาษี
+                  อัตราภาษี →
                 </text>
               </g>
 

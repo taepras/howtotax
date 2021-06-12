@@ -2,6 +2,7 @@ import React from 'react';
 import { theme } from '../theme';
 import Button from '../components/Button';
 import Step from '../components/Step';
+import Pill from '../components/Pill';
 
 const EndingPage = ({ currentNarrativeStep, setCurrentNarrativeStep, narrativeStepsCount }) => (
   <Step
@@ -13,27 +14,35 @@ const EndingPage = ({ currentNarrativeStep, setCurrentNarrativeStep, narrativeSt
       backgroundColor: theme.colors.bg,
       zIndex: 100,
       top: 30,
-      padding: 50,
-      paddingTop: 30,
+      padding: 30,
+      paddingTop: 50,
       textAlign: 'center',
     }}
   >
     <p>
-      เรื่องราวเกี่ยวกับภาษียังมีรายละเอียด
+      และนี่คือการคำนวณ
       <br />
-      กว่านี้อีกมาก สามารถอ่านเพิ่มเติมได้ที่
+      <Pill color="taxText">ภาษีเงินได้บุคคลธรรมดา</Pill>
+      เบื้องต้น
       <br />
-      เว็บไซต์
+      {/* <small style={{ color: theme.colors.textSecondary }}>(อ้างอิงข้อมูลปีภาษี 2563)</small>
+    </p>
+    <p> */}
+      หากสนใจเรื่องการคำนวณภาษี
+      <br />
+      อย่างละเอียด สามารถอ่านได้จาก
+      <br />
       {' '}
-      <a href="https://www.rd.go.th/548.html">กรมสรรพากร</a>
+      <a href="https://www.rd.go.th/548.html" target="_blank" rel="noreferrer">กรมสรรพากร</a>
       {' '}
-      <br />
-      หรือแหล่งข้อมูลเกี่ยวกับภาษีอื่นๆ
+      หรือ
+      {' '}
+      <a href="https://www.google.com/search?q=%E0%B8%84%E0%B8%B3%E0%B8%99%E0%B8%A7%E0%B8%93%E0%B8%A0%E0%B8%B2%E0%B8%A9%E0%B8%B5" title="Google: 'คำนวณภาษี'" target="_blank" rel="noreferrer">แหล่งข้อมูลอื่นๆ</a>
     </p>
     <p>
       แต่ถ้าชอบ visualization นี้
       <br />
-      แชร์ให้เพื่อนดูต่อได้เลย
+      ก็อย่าลืมแชร์ต่อให้เพื่อนได้เลย!
     </p>
     <div style={{ display: 'flex', gap: '10px' }}>
       <div
@@ -106,6 +115,8 @@ const EndingPage = ({ currentNarrativeStep, setCurrentNarrativeStep, narrativeSt
       <a
         href="https://taepras.com"
         style={{ color: theme.colors.textSecondary }}
+        target="_blank"
+        rel="noreferrer"
       >
         <img src={`${process.env.PUBLIC_URL}/logo_initials.svg`} alt="tp_" style={{ width: 64 }} />
         <br />

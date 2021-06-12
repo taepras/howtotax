@@ -39,8 +39,10 @@ const GlobalStyle = createGlobalStyle`
     text-decoration: underline;
   }
 
-  a:hover {
-    opacity: .7;
+  @media (hover: hover) or (pointer: fine) {
+    a:hover {
+      opacity: .7;
+    }
   }
 
   .axis line, .axis path {
@@ -83,9 +85,10 @@ const GlobalStyle = createGlobalStyle`
   button {
     cursor: pointer;
   }
-
-  button:hover {
-    opacity: .7;
+  @media (hover: hover) or (pointer: fine) {
+    button:hover {
+      opacity: .7;
+    }
   }
 `;
 
