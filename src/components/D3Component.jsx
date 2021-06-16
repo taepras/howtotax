@@ -57,6 +57,7 @@ export const D3Component = ({
   isBlink = {},
   showFullScale = false,
   forceBlinkTax = false,
+  showScaleReference = true,
 }) => {
   const {
     observe, unobserve, width, height, entry,
@@ -108,8 +109,9 @@ export const D3Component = ({
   const axisIncome = useMemo(() => d3.axisLeft(scaleIncome)
     .tickFormat(d3.format('.3s')),
   [scaleIncome]);
-  const axisTaxRate = useMemo(() => d3.axisBottom(scaleTaxRate).tickFormat(d3.format('.0%')).tickSize(-6).tickPadding(12),
-    [scaleTaxRate]);
+  const axisTaxRate = useMemo(() => d3.axisBottom(scaleTaxRate).tickFormat(d3.format('.0%')).ticks(5).tickSize(-6)
+    .tickPadding(12),
+  [scaleTaxRate]);
 
   useLayoutEffect(() => {
     if (d3Container.current) {
@@ -292,13 +294,15 @@ export const D3Component = ({
             </g>
           </g>
           <rect className="fade" fill="url(#fade-grad)" width={width} height={(height - padding.bottom) * 0.25} />
-          <ScaleReference
-            scale={scaleIncome}
-            barWidth={barWidth}
-            x={width}
-            y={40 / 2}
-            maxSize={40}
-          />
+          {showScaleReference && (
+            <ScaleReference
+              scale={scaleIncome}
+              barWidth={barWidth}
+              x={width}
+              y={40 / 2}
+              maxSize={40}
+            />
+          )}
         </CartesianSvg>
       </SvgContainer>
     </>
