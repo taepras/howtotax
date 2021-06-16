@@ -47,13 +47,16 @@ const CoverPage = ({ currentNarrativeStep, setCurrentNarrativeStep }) => (
         marginBottom: 16,
       }}
       >
-        เข้าใจ
-        <span style={{ color: theme.colors.taxText }}>ภาษี</span>
+        HOW
         <br />
-        แบบเห็นภาพ
+        TO
+        <br />
+        <span style={{ color: theme.colors.taxText }}>TAX?</span>
+        {/* <br />
+        แบบเห็นภาพ */}
       </h1>
       <p>
-        ภาษีคิดมายังไง? คำนวณภาษียากจัง?
+        ภาษีคิดยังไง? คำนวณภาษียากจัง?
         <br />
         มาลองคิดภาษีแบบ &ldquo;เห็นภาพ&rdquo;
         <br />
@@ -85,8 +88,8 @@ const CoverPage = ({ currentNarrativeStep, setCurrentNarrativeStep }) => (
       > */}
       <p style={{
         color: theme.colors.textSecondary,
-        marginTop: '3rem',
-        marginBottom: '-3rem',
+        marginTop: '2rem',
+        marginBottom: '-2rem',
         textAlign: 'center',
         lineHeight: 1.2,
       }}

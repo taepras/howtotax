@@ -103,10 +103,12 @@ export const TaxBracketDisplay = ({
         .style('stroke-dasharray', '5, 3')
         .transition()
         .duration(transitionDuration)
-      // .style('stroke-opacity', '0.4')
+        // .style('stroke-opacity', '0.4')
         .attr('y1', (d) => Math.round(scaleIncome(d.maxNetIncome)))
         .attr('y2', (d) => Math.round(scaleIncome(d.maxNetIncome)))
         .attr('opacity', active ? 1 : 0.3);
+      // eslint-disable-next-line max-len
+      // .style('stroke-opacity', (d, i) => (i !== 0 && scaleIncome(d.maxNetIncome - d.minNetIncome) > 40 ? 1 : 0));
 
       bracketLineGroups.merge(bracketLineGroupsEnter)
         .select('text.bracket-rate-text')
