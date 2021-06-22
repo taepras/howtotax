@@ -58,7 +58,7 @@ const ContentContainer = styled.div`
   transition: min-height 0.3s;
 
   @media (min-width: 480px) {
-    min-height: ${(props) => (props.taller ? '460px' : '240px')};
+    min-height: ${(props) => (props.taller ? '490px' : '240px')};
     flex-grow: 0;
   }
 `;
@@ -414,6 +414,14 @@ function App() {
           <Pill color="incomeText" bold>{salary.toLocaleString()}</Pill>
           {' '}
           บาท
+          {' '}
+          {/* <small>
+            (ประมาณ
+            {' '}
+            {Math.round(salary / 12).toLocaleString()}
+            {' '}
+            บาท/เดือน)
+          </small> */}
         </p>
         <div style={{ display: 'flex' }}>
           <label
@@ -1025,16 +1033,19 @@ function App() {
           <br />
           <b>
             {Math.ceil(taxFinal).toLocaleString()}
-            {' '}
-            <small>
-              (
-              {((taxFinal / income) * 100).toFixed(1)}
-              %)
-
-            </small>
           </b>
         </div>
       </div>
+      <p style={{ textAlign: 'center', marginTop: 8 }}>
+        ภาษีที่ต้องเสีย คิดเป็น
+        {' '}
+        <b>
+          {((taxFinal / income) * 100).toFixed(1)}
+          %
+        </b>
+        {' '}
+        ของเงินได้ทั้งหมด
+      </p>
     </ScrollBox>,
     // </div>,
   ];
@@ -1068,6 +1079,8 @@ function App() {
           currentNarrativeStep={currentNarrativeStep}
           setCurrentNarrativeStep={setCurrentNarrativeStep}
           narrativeStepsCount={narrativeSteps.length}
+          tax={taxFinal}
+          income={income}
         />
 
         <ChartContainer>
@@ -1114,8 +1127,6 @@ function App() {
               style={{
                 width: '100%',
                 maxWidth: 500,
-                boxShadow: '0px 3px 6px rgba(0, 0, 0, 0.3)',
-                transform: 'rotate(3deg)',
               }}
             />
           </TaxTableDisplay>
