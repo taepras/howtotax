@@ -205,7 +205,13 @@ const EndingPage = ({
       </div>
       {showQr && (
         <>
-          <PageOverlay onClick={() => setShowQr(false)}>
+          <PageOverlay
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                setShowQr(false);
+              }
+            }}
+          >
             <div style={{ position: 'absolute', top: '16px', right: '16px' }}>
               <Button
                 onClick={() => setShowQr(false)}
