@@ -95,10 +95,10 @@ const EndingPage = ({
         {' '}
         <a href="https://www.google.com/search?q=%E0%B8%84%E0%B8%B3%E0%B8%99%E0%B8%A7%E0%B8%93%E0%B8%A0%E0%B8%B2%E0%B8%A9%E0%B8%B5" title="Google: 'คำนวณภาษี'" target="_blank" rel="noreferrer">แหล่งข้อมูลอื่นๆ</a>
       </p>
-      <p style={{ marginBottom: '0.5rem' }}>
+      <p style={{ marginBottom: '1rem' }}>
         แต่ถ้าชอบ visualization นี้ ก็แชร์ต่อได้เลย!
       </p>
-      <div style={{ display: 'flex', gap: '10px', marginBottom: '0.5rem' }}>
+      <div style={{ display: 'flex', gap: '10px', marginBottom: '1rem' }}>
         <div
           className="fb-share-button"
           data-href="https://taepras.github.io/howtotax/"
@@ -136,7 +136,7 @@ const EndingPage = ({
           data-count="false"
         />
       </div>
-      <p style={{ marginBottom: '0.5rem' }}>
+      <p style={{ marginBottom: '1rem' }}>
         หรือสนับสนุนผ่าน
         <Button
           style={{ marginLeft: '0.5rem', backgroundColor: '#113e67' }}
